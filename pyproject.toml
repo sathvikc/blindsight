@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blindsight"
+version = "0.1.0"
+description = "Convert any image into a structured text descriptor using classical image processing, so text-first LLMs can answer factual questions about it without paying for full vision."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Blindsight" }]
+keywords = ["image", "ocr", "descriptor", "llm", "computer-vision"]
+
+dependencies = [
+    "numpy>=1.24",
+    "Pillow>=10.0",
+    "opencv-python>=4.8",
+]
+
+[project.optional-dependencies]
+ocr = ["pytesseract>=0.3.10"]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+blindsight = "blindsight.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["blindsight*"]

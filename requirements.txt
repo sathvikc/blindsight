@@ -1,0 +1,10 @@
+# Core — required
+numpy>=1.24
+Pillow>=10.0
+opencv-python>=4.8
+
+# Optional — enables the OCR (text extraction) module.
+# Also requires the system `tesseract` binary:
+#   macOS:  brew install tesseract
+#   Ubuntu: apt-get install tesseract-ocr
+pytesseract>=0.3.10
