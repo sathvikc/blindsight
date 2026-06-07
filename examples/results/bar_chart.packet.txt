@@ -1,0 +1,56 @@
+You are answering questions about an image you cannot see directly. Below is a
+structured text descriptor of that image, produced by classical image analysis.
+Answer each question using only the descriptor. If the descriptor does not
+contain enough information, say "insufficient information".
+
+=== IMAGE DESCRIPTOR ===
+source: examples/images/bar_chart.png
+size: 640x420
+modules: 8/8 available
+
+[Stats]
+  resolution: 640x420
+  orientation: landscape
+  aspect_ratio: 32:21
+  brightness: bright
+  contrast: medium
+
+[OCR]
+  text: "Quarterly Revenue (Cr) 200 160 120 Qi Q2 Q3 280"
+  confidence: 89.9% (reliable)
+  position: top-left
+  size: medium
+
+[Colors]
+  dominant: white #FFFFFF (64%), red #D9302A (9%), orange #DE831F (7%), lime green #52AA54 (5%), gray #43638C (5%)
+  grid:
+    TL:white  TC:white  TR:light gray
+    ML:white  MC:beige  MR:beige
+    BL:light gray  BC:beige  BR:beige
+  grayscale: false
+
+[Structure]
+  edge_density: low
+  lines: horizontal=true, vertical=true, diagonal=false
+  layout: structured
+
+[Shapes]
+  count: 2
+  - polygon(7), large, center
+  - triangle, small, top-left
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================
+
+QUESTIONS:
+1. What is the title of this chart?
+2. How many bars does the chart contain?
+3. Which quarter had the highest revenue?

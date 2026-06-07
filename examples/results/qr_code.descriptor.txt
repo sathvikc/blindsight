@@ -1,0 +1,45 @@
+=== IMAGE DESCRIPTOR ===
+source: examples/images/qr_code.png
+size: 360x360
+modules: 8/8 available
+
+[Stats]
+  resolution: 360x360
+  orientation: square
+  aspect_ratio: 1:1
+  brightness: bright
+  contrast: high
+
+[OCR]
+  text: (none detected)
+
+[Colors]
+  dominant: white #FFFFFF (52%), black #000000 (17%), black #020202 (7%), white #FBFBFB (5%), gray #7C7C7C (4%)
+  grid:
+    TL:light gray  TC:light gray  TR:light gray
+    ML:gray  MC:gray  MR:light gray
+    BL:light gray  BC:light gray  BR:light gray
+  grayscale: true
+
+[Structure]
+  edge_density: medium
+  lines: horizontal=true, vertical=true, diagonal=false
+  layout: busy
+
+[Shapes]
+  count: 4
+  - square, large, center
+  - square, medium, bottom-left
+  - square, medium, top-right
+  - square, medium, top-left
+
+[Faces]
+  count: 0
+
+[Codes]
+  QR: https://sathvikc.github.io/lume-js/
+
+[EXIF]
+  none
+
+=========================

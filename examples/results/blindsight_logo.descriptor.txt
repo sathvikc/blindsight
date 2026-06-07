@@ -1,0 +1,47 @@
+=== IMAGE DESCRIPTOR ===
+source: examples/images/blindsight_logo.png
+size: 1024x1024
+modules: 8/8 available
+
+[Stats]
+  resolution: 1024x1024
+  orientation: square
+  aspect_ratio: 1:1
+  brightness: bright
+  contrast: medium
+
+[OCR]
+  text: "MAGES SEE DATA, NOT BLINDSIGHT"
+  confidence: 95.0% (reliable)
+  position: center
+  size: large
+
+[Colors]
+  dominant: white #FFFFFF (79%), navy blue #121154 (5%)
+  grid:
+    TL:white  TC:light gray  TR:white
+    ML:white  MC:light gray  MR:white
+    BL:white  BC:white  BR:white
+  grayscale: true
+
+[Structure]
+  edge_density: low
+  lines: horizontal=false, vertical=true, diagonal=false
+  layout: structured
+
+[Shapes]
+  count: 3
+  - polygon(7), medium, center
+  - square, small, center
+  - square, small, left
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================

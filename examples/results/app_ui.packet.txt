@@ -1,0 +1,59 @@
+You are answering questions about an image you cannot see directly. Below is a
+structured text descriptor of that image, produced by classical image analysis.
+Answer each question using only the descriptor. If the descriptor does not
+contain enough information, say "insufficient information".
+
+=== IMAGE DESCRIPTOR ===
+source: examples/images/app_ui.png
+size: 390x700
+modules: 8/8 available
+
+[Stats]
+  resolution: 390x700
+  orientation: portrait
+  aspect_ratio: 39:70
+  brightness: bright
+  contrast: medium
+
+[OCR]
+  text: "Account @e Notifications @e Privacy Appearance @e Storage @e Save"
+  confidence: 62.4% (uncertain)
+  position: top-left
+  size: medium
+
+[Colors]
+  dominant: white #F5F6F8 (38%), white #FFFFFF (31%), blue #2062E8 (19%)
+  grid:
+    TL:light gray  TC:light gray  TR:light gray
+    ML:white  MC:white  MR:white
+    BL:light gray  BC:light gray  BR:light gray
+  grayscale: false
+
+[Structure]
+  edge_density: low
+  lines: horizontal=true, vertical=false, diagonal=false
+  layout: structured
+
+[Shapes]
+  count: 4
+  - rectangle, medium, bottom-center
+  - triangle, small, top-left
+  - rectangle, small, top-left
+  - triangle, small, left
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================
+
+QUESTIONS:
+1. What screen of the app is this?
+2. List the menu options shown.
+3. What colour is the primary action button?
+4. Which setting is toggled off?

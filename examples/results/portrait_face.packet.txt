@@ -1,0 +1,54 @@
+You are answering questions about an image you cannot see directly. Below is a
+structured text descriptor of that image, produced by classical image analysis.
+Answer each question using only the descriptor. If the descriptor does not
+contain enough information, say "insufficient information".
+
+=== IMAGE DESCRIPTOR ===
+source: examples/images/portrait_face.jpg
+size: 1024x1024
+modules: 8/8 available
+
+[Stats]
+  resolution: 1024x1024
+  orientation: square
+  aspect_ratio: 1:1
+  brightness: mid
+  contrast: medium
+
+[OCR]
+  text: (none detected)
+
+[Colors]
+  dominant: dark gray #402D20 (20%), gray #AE8776 (14%), gray #946E5F (12%), dark gray #362B24 (12%), beige #CBA290 (12%)
+  grid:
+    TL:dark gray  TC:gray  TR:dark gray
+    ML:dark gray  MC:gray  MR:brown
+    BL:dark gray  BC:gray  BR:dark gray
+  grayscale: false
+
+[Structure]
+  edge_density: medium
+  lines: horizontal=true, vertical=true, diagonal=true
+  layout: busy
+
+[Shapes]
+  count: 1
+  - polygon(7), small, right
+
+[Faces]
+  count: 1
+  positions: center
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================
+
+QUESTIONS:
+1. How many people are in this image?
+2. What is the dominant background colour?
+3. Is the person smiling?
+4. Approximately what is the person's age?

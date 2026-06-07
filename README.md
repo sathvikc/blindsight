@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="examples/images/blindsight_logo.png" alt="Blindsight" width="420">
+</p>
+
 # Blindsight
 
 Turn any image into a compact, structured **text descriptor** using classical

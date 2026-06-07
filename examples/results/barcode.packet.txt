@@ -1,0 +1,65 @@
+You are answering questions about an image you cannot see directly. Below is a
+structured text descriptor of that image, produced by classical image analysis.
+Answer each question using only the descriptor. If the descriptor does not
+contain enough information, say "insufficient information".
+
+=== IMAGE DESCRIPTOR ===
+source: examples/images/barcode.png
+size: 523x280
+modules: 8/8 available
+
+[Stats]
+  resolution: 523x280
+  orientation: landscape
+  aspect_ratio: 523:280
+  brightness: bright
+  contrast: high
+
+[OCR]
+  text: "5901234123457"
+  confidence: 96.0% (reliable)
+  position: bottom-center
+  size: large
+
+[Colors]
+  dominant: white #FFFFFF (56%), black #000000 (11%), white #FDFDFD (7%), black #060606 (6%), gray #707070 (5%)
+  grid:
+    TL:light gray  TC:gray  TR:light gray
+    ML:light gray  MC:gray  MR:light gray
+    BL:white  BC:white  BR:white
+  grayscale: true
+
+[Structure]
+  edge_density: medium
+  lines: horizontal=true, vertical=true, diagonal=false
+  layout: busy
+
+[Shapes]
+  count: 12
+  - triangle, medium, center
+  - blob, small, right
+  - blob, small, center
+  - blob, small, left
+  - blob, small, right
+  - blob, small, center
+  - blob, small, center
+  - blob, small, center
+  - blob, small, center
+  - blob, small, center
+  - blob, small, left
+  - blob, small, center
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================
+
+QUESTIONS:
+1. What type of code is shown?
+2. What is the decoded barcode number?

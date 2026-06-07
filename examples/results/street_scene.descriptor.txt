@@ -1,0 +1,42 @@
+=== IMAGE DESCRIPTOR ===
+source: examples/images/street_scene.jpg
+size: 800x533
+modules: 8/8 available
+
+[Stats]
+  resolution: 800x533
+  orientation: landscape
+  aspect_ratio: 800:533
+  brightness: mid
+  contrast: low
+
+[OCR]
+  text: (none detected)
+
+[Colors]
+  dominant: sky blue #7FC0E9 (18%), sky blue #5FB0E0 (15%), sky blue #78BCE8 (13%), sky blue #6FB5E2 (12%), sky blue #65A2CD (11%)
+  grid:
+    TL:sky blue  TC:sky blue  TR:sky blue
+    ML:sky blue  MC:sky blue  MR:sky blue
+    BL:sky blue  BC:gray  BR:sky blue
+  grayscale: false
+
+[Structure]
+  edge_density: low
+  lines: horizontal=true, vertical=true, diagonal=true
+  layout: structured
+
+[Shapes]
+  count: 1
+  - polygon(5), medium, bottom-center
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  orientation: landscape
+
+=========================

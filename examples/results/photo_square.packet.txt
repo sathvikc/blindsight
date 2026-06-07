@@ -1,0 +1,54 @@
+You are answering questions about an image you cannot see directly. Below is a
+structured text descriptor of that image, produced by classical image analysis.
+Answer each question using only the descriptor. If the descriptor does not
+contain enough information, say "insufficient information".
+
+=== IMAGE DESCRIPTOR ===
+source: examples/images/photo_square.jpg
+size: 640x640
+modules: 8/8 available
+
+[Stats]
+  resolution: 640x640
+  orientation: square
+  aspect_ratio: 1:1
+  brightness: mid
+  contrast: high
+
+[OCR]
+  text: (none detected)
+
+[Colors]
+  dominant: black #110C0C (13%), light gray #D8CFCA (13%), light gray #E6DCD6 (12%), light gray #C6BDB8 (12%), dark gray #4C4749 (12%)
+  grid:
+    TL:light gray  TC:light gray  TR:light gray
+    ML:gray  MC:gray  MR:gray
+    BL:dark gray  BC:dark gray  BR:dark gray
+  grayscale: false
+
+[Structure]
+  edge_density: medium
+  lines: horizontal=true, vertical=false, diagonal=true
+  layout: busy
+
+[Shapes]
+  count: 3
+  - polygon(6), large, center
+  - triangle, small, bottom-center
+  - rectangle, small, center
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  orientation: landscape
+
+=========================
+
+QUESTIONS:
+1. What text is visible in the image?
+2. How many human faces are present?
+3. Describe what is physically happening in this scene.

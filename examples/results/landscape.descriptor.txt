@@ -1,0 +1,42 @@
+=== IMAGE DESCRIPTOR ===
+source: examples/images/landscape.jpg
+size: 800x533
+modules: 8/8 available
+
+[Stats]
+  resolution: 800x533
+  orientation: landscape
+  aspect_ratio: 800:533
+  brightness: bright
+  contrast: medium
+
+[OCR]
+  text: (none detected)
+
+[Colors]
+  dominant: light gray #C7C9CD (16%), white #F8F0EA (13%), white #EFE8E5 (12%), dark gray #454B54 (12%), light gray #E2DCDA (12%)
+  grid:
+    TL:light gray  TC:light gray  TR:light gray
+    ML:light gray  MC:light gray  MR:light gray
+    BL:gray  BC:gray  BR:gray
+  grayscale: false
+
+[Structure]
+  edge_density: low
+  lines: horizontal=true, vertical=false, diagonal=false
+  layout: structured
+
+[Shapes]
+  count: 1
+  - blob, medium, bottom-center
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  orientation: landscape
+
+=========================

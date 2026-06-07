@@ -1,0 +1,62 @@
+You are answering questions about an image you cannot see directly. Below is a
+structured text descriptor of that image, produced by classical image analysis.
+Answer each question using only the descriptor. If the descriptor does not
+contain enough information, say "insufficient information".
+
+=== IMAGE DESCRIPTOR ===
+source: examples/images/receipt.png
+size: 420x560
+modules: 8/8 available
+
+[Stats]
+  resolution: 420x560
+  orientation: portrait
+  aspect_ratio: 3:4
+  brightness: bright
+  contrast: medium
+
+[OCR]
+  text: "BLUE CART MARKET 123 Banjara Hills, Hyd Date: 2026-05-12 14:32 Receipt #: 004871 Milk IL x2 90.00 Brown Bread x1 45.00 Eggs (12) x1 120.00 Bananas 1kg x1 60.00 Coffee 200g x1 340.00 SUBTOTAL 655.00 GST 5% 32.75 TOTAL Rs 687.75 THANK YOU FOR SHOPPING"
+  confidence: 87.4% (reliable)
+  position: top-center
+  size: medium
+
+[Colors]
+  dominant: white #FFFFFF (76%), white #FDFDFD (4%), white #FEFEFE (4%)
+  grid:
+    TL:white  TC:white  TR:white
+    ML:white  MC:white  MR:white
+    BL:white  BC:white  BR:white
+  grayscale: true
+
+[Structure]
+  edge_density: medium
+  lines: horizontal=true, vertical=false, diagonal=false
+  layout: structured
+
+[Shapes]
+  count: 7
+  - blob, small, bottom-center
+  - blob, small, center
+  - blob, small, top-center
+  - blob, small, top-center
+  - rectangle, small, bottom-center
+  - triangle, small, top-left
+  - polygon(6), small, top-center
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================
+
+QUESTIONS:
+1. What store issued this receipt?
+2. What is the total amount?
+3. How many eggs were purchased and at what price?
+4. What date and time was this receipt issued?
