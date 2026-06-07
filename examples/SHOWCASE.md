@@ -136,7 +136,7 @@ These are photographs. They show the descriptor's ceiling clearly, which is the
 | Question | Verdict | From the descriptor |
 |---|---|---|
 | How many people? | ✅ | Faces: count 1 (center) |
-| Dominant background colour? | ⚠️ | Colors lead with gray/beige skin-and-scene mix; no single clean "background" |
+| Dominant background colour? | ⚠️ | Colors lead with a dark brown / gray / salmon skin-and-scene mix; no single clean "background" |
 | Is the person smiling? | ❌ | No expression analysis — needs the image |
 | Approximate age? | ❌ | Out of scope entirely |
 

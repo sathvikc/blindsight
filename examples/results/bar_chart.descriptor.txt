@@ -20,8 +20,8 @@ modules: 8/8 available
   dominant: white #FFFFFF (64%), red #D9302A (9%), orange #DE831F (7%), lime green #52AA54 (5%), gray #43638C (5%)
   grid:
     TL:white  TC:white  TR:light gray
-    ML:white  MC:beige  MR:beige
-    BL:light gray  BC:beige  BR:beige
+    ML:white  MC:beige  MR:salmon
+    BL:light blue  BC:beige  BR:beige
   grayscale: false
 
 [Structure]

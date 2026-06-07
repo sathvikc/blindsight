@@ -19,9 +19,9 @@ modules: 8/8 available
 [Colors]
   dominant: white #F5F6F8 (38%), white #FFFFFF (31%), blue #2062E8 (19%)
   grid:
-    TL:light gray  TC:light gray  TR:light gray
+    TL:light blue  TC:light blue  TR:light blue
     ML:white  MC:white  MR:white
-    BL:light gray  BC:light gray  BR:light gray
+    BL:light blue  BC:light blue  BR:light blue
   grayscale: false
 
 [Structure]

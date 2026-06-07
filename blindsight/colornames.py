@@ -26,13 +26,16 @@ _PALETTE: list[tuple[str, tuple[int, int, int]]] = [
     ("dark green", (0, 80, 30)),
     ("teal", (0, 128, 128)),
     ("cyan", (0, 200, 200)),
+    ("light blue", (170, 200, 240)),
     ("sky blue", (100, 180, 235)),
     ("blue", (30, 80, 200)),
     ("navy blue", (20, 30, 90)),
     ("purple", (128, 0, 160)),
     ("magenta", (200, 30, 160)),
     ("pink", (255, 150, 190)),
+    ("salmon", (230, 150, 140)),
     ("brown", (140, 80, 40)),
+    ("dark brown", (80, 50, 35)),
     ("beige", (225, 200, 160)),
 ]
 

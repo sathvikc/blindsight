@@ -14,9 +14,9 @@ modules: 8/8 available
   text: (none detected)
 
 [Colors]
-  dominant: dark gray #402D20 (20%), gray #AE8776 (14%), gray #946E5F (12%), dark gray #362B24 (12%), beige #CBA290 (12%)
+  dominant: dark brown #402D20 (20%), gray #AE8776 (14%), gray #946E5F (12%), dark brown #362B24 (12%), salmon #CBA290 (12%)
   grid:
-    TL:dark gray  TC:gray  TR:dark gray
+    TL:dark brown  TC:gray  TR:dark brown
     ML:dark gray  MC:gray  MR:brown
     BL:dark gray  BC:gray  BR:dark gray
   grayscale: false
