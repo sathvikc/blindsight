@@ -9,7 +9,7 @@ description = "Convert any image into a structured text descriptor using classic
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "Blindsight" }]
+authors = [{ name = "Sathvik Chinnu" }]
 keywords = ["image", "ocr", "descriptor", "llm", "computer-vision"]
 
 dependencies = [
