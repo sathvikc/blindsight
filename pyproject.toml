@@ -18,6 +18,10 @@ dependencies = [
     "opencv-python>=4.8",
 ]
 
+[project.urls]
+Homepage = "https://github.com/sathvikc/blindsight"
+Repository = "https://github.com/sathvikc/blindsight"
+
 [project.optional-dependencies]
 ocr = ["pytesseract>=0.3.10"]
 dev = ["pytest>=7.4"]
