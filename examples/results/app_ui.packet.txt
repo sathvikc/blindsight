@@ -16,8 +16,8 @@ modules: 8/8 available
   contrast: medium
 
 [OCR]
-  text: "Account @e Notifications @e Privacy Appearance @e Storage @e Save"
-  confidence: 62.4% (uncertain)
+  text: "Account @ / Notifications @ / Privacy / Appearance @ / Storage @ / Save"
+  confidence: 76.7% (reliable)
   position: top-left
   size: medium
 

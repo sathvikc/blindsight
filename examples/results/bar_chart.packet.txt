@@ -16,7 +16,7 @@ modules: 8/8 available
   contrast: medium
 
 [OCR]
-  text: "Quarterly Revenue (Cr) 200 160 120 Qi Q2 Q3 280"
+  text: "Quarterly Revenue (Cr) / 280 / 200 / 160 / 120 / Qi Q2 Q3"
   confidence: 89.9% (reliable)
   position: top-left
   size: medium

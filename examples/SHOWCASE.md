@@ -56,14 +56,17 @@ A vision model has to *read* this; Blindsight just *decodes* it.
 
 | Question | Verdict | From the descriptor |
 |---|---|---|
-| What screen is this? | ✅ | OCR begins with the header; rows read as a settings list |
-| List the menu options. | ✅ | OCR: Account, Notifications, Privacy, Appearance, Storage |
+| What screen is this? | ✅ | OCR header reads as a settings list |
+| List the menu options. | ✅ | OCR, one row per line: Account, Notifications, Privacy, Appearance, Storage |
 | Colour of the primary button? | ✅ | Colors: blue #2062E8 (19%) — the Save button |
-| Which setting is toggled off? | ⚠️ | OCR garbles toggle glyphs ("@e"); the *off* state isn't legible from text |
+| Which setting is toggled off? | ⚠️ | OCR puts a toggle glyph ("@") on every row *except* Privacy — the signal is now present, but the model won't commit to reading it as "off" |
 
-A strong, realistic result: the textual content of a UI extracts well; the
-*state* of a custom toggle widget does not. OCR confidence 62.4% flags the
-uncertainty honestly.
+A strong, realistic result. Reading-order line reconstruction puts each setting on
+its own line, so the menu enumerates cleanly. The low-confidence refinement pass
+also lifts OCR confidence from 62.4% to **76.7% (reliable)** and sharpens the
+toggle glyphs: every row shows an `@` except `Privacy`. The *off* state is
+therefore latent in the text now, though answering it still leans on inference the
+descriptor doesn't make explicit — an honest ⚠️ rather than a clean win.
 
 ### `blindsight_logo.png` — clean wordmark (the project's own logo)
 
@@ -104,13 +107,15 @@ different module. Worth noting the EAN-13 check digit (`...57`) is recovered.
 | Question | Verdict | From the descriptor |
 |---|---|---|
 | Title of the chart? | ✅ | OCR: "Quarterly Revenue (Cr)" |
-| How many bars? | ❌ | Shapes merged the bars into one `polygon(7)` — count is unreliable |
-| Which quarter was highest? | ⚠️ | OCR recovers values (200/160/120/280) and labels, but their pairing is lost |
+| How many bars? | ✅ | OCR lists four values in order (280 / 200 / 160 / 120) — the count is recoverable |
+| Which quarter was highest? | ❌ | The value→quarter pairing is still lost; the model guessed Q1 |
 
-Honest failure mode: classical contour detection can't separate adjacent bars,
-and OCR reads the value labels out of spatial order ("…120 Qi Q2 Q3 280"). A
-model *might* infer Q4=280 is highest from the numbers, but the descriptor
-doesn't hand it the bar→value mapping. Charts are a "send the image" signal.
+A mixed case that improved. Reading-order reconstruction now lists the four value
+labels cleanly and in descending order (280 / 200 / 160 / 120), so "how many bars"
+becomes answerable from the count of values. But the descriptor still doesn't bind
+each value to its quarter — contour detection can't separate adjacent bars, and
+"which quarter is highest" needs that mapping. So the easy structural question is
+recovered while the relational one remains a "send the image" signal.
 
 ### `logo.png` — clean wordmark, brand colour recovered from a thin accent (the `lume.js` logo)
 
@@ -196,11 +201,13 @@ hallucinating — a safe failure.
 ## What the showcase demonstrates
 
 1. **Documents, codes, and UI text** — Blindsight answers as well as a vision
-   model, far cheaper. This is the project's home turf.
+   model, far cheaper. This is the project's home turf, and reading-order line
+   reconstruction keeps multi-line layouts (receipts, menus) intact for the model.
 2. **Charts, logos, low-contrast text** — partial. The descriptor surfaces the
-   right raw tokens (brand name, tagline, chart title) and now recovers small-area
-   brand colours through the accent line, but still loses chart structure and the
-   emblem's meaning; the confidence scores flag when to distrust it.
+   right raw tokens (brand name, tagline, chart title, value labels), recovers
+   small-area brand colours through the accent line, and now reads a chart's value
+   count — but still loses the *relational* structure (which bar is which value)
+   and the emblem's meaning; the confidence scores flag when to distrust it.
 3. **Photographs and scene meaning** — out of scope by design. The descriptor
    reports honest negatives ("none detected", count 0) instead of guessing,
    which is exactly the cue to escalate to a real vision model.

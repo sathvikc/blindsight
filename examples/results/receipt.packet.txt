@@ -16,7 +16,7 @@ modules: 8/8 available
   contrast: medium
 
 [OCR]
-  text: "BLUE CART MARKET 123 Banjara Hills, Hyd Date: 2026-05-12 14:32 Receipt #: 004871 Milk IL x2 90.00 Brown Bread x1 45.00 Eggs (12) x1 120.00 Bananas 1kg x1 60.00 Coffee 200g x1 340.00 SUBTOTAL 655.00 GST 5% 32.75 TOTAL Rs 687.75 THANK YOU FOR SHOPPING"
+  text: "BLUE CART MARKET / 123 Banjara Hills, Hyd / Date: 2026-05-12 14:32 / Receipt #: 004871 / Milk IL x2 90.00 / Brown Bread x1 45.00 / Eggs (12) x1 120.00 / Bananas 1kg x1 60.00 / Coffee 200g x1 340.00 / SUBTOTAL 655.00 / GST 5% 32.75 / TOTAL Rs 687.75 / THANK YOU FOR SHOPPING"
   confidence: 87.4% (reliable)
   position: top-center
   size: medium

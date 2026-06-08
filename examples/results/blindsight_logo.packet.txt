@@ -16,7 +16,7 @@ modules: 8/8 available
   contrast: medium
 
 [OCR]
-  text: "MAGES SEE DATA, NOT BLINDSIGHT"
+  text: "BLINDSIGHT / SEE DATA, NOT / MAGES"
   confidence: 95.0% (reliable)
   position: center
   size: large

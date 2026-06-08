@@ -16,7 +16,7 @@ modules: 8/8 available
   contrast: medium
 
 [OCR]
-  text: "i ~( “nw lume.js ILLUMINATE YOUR UI"
+  text: "i / ~( / “nw / lume.js / ILLUMINATE YOUR UI"
   confidence: 73.1% (uncertain)
   position: top-center
   size: large
