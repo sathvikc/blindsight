@@ -18,6 +18,7 @@ modules: 8/8 available
 
 [Colors]
   dominant: white #FFFFFF (87%)
+  accent: orange #BA8F49 (3%), light orange #F0C988 (1%)
   grid:
     TL:white  TC:white  TR:white
     ML:white  MC:white  MR:white

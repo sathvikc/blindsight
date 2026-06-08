@@ -2,6 +2,10 @@
   <img src="examples/images/blindsight_logo.png" alt="Blindsight" width="420">
 </p>
 
+<p align="center">
+  <a href="#benchmark"><img alt="Factual accuracy: 83% (descriptor) vs 94% (vision), at half the tokens" src="https://img.shields.io/badge/factual-83%25_vs_94%25_vision_at_half_the_tokens-1a3c5e"></a>
+</p>
+
 # Blindsight
 
 Turn any image into a compact, structured **text descriptor** using classical
@@ -96,7 +100,7 @@ included [benchmark](#benchmark) exists to measure exactly where that line sits.
 |-------------|-------------------------------------------------------------------|
 | `stats`     | resolution, orientation, aspect ratio, brightness, contrast       |
 | `ocr`       | text content, confidence, position, relative size *(optional)*    |
-| `colors`    | dominant palette (hex + name), 3×3 colour grid, grayscale flag    |
+| `colors`    | dominant + accent palette (hex + name), 3×3 colour grid, grayscale |
 | `structure` | edge density, dominant line orientations, layout character        |
 | `shapes`    | object count, shape class, size, position                         |
 | `faces`     | face count and rough positions (classical Haar cascades)          |
@@ -195,10 +199,10 @@ the descriptor text alone (condition A) and once on the real image (condition B)
 
 | Question type | Descriptor (text) | Image (control) |
 |---|---|---|
-| **Factual** (what does it say / what value / how many) | **80%** | 94% |
+| **Factual** (what does it say / what value / how many) | **83%** | 94% |
 | **Perceptual** (mood, scene meaning, expression, landmark) | 11% | 100% |
 
-So on the factual subset the text descriptor recovers ~85% of full-vision
+So on the factual subset the text descriptor recovers ~88% of full-vision
 accuracy while using **~52% fewer input tokens** (per `token_savings.py`), and on
 perceptual questions it honestly defers rather than guessing — which is the
 signal to fall back to the real image.

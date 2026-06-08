@@ -56,3 +56,64 @@ def nearest_name(rgb: tuple[int, int, int]) -> str:
 def to_hex(rgb: tuple[int, int, int]) -> str:
     """Format an RGB triple as ``#RRGGBB``."""
     return "#{:02X}{:02X}{:02X}".format(*rgb)
+
+
+# Hue buckets in degrees (lower bound inclusive) -> base name. Names reuse the
+# vocabulary of the palette above so accent names read consistently with the
+# dominant ones.
+_HUE_NAMES: list[tuple[float, str]] = [
+    (0, "red"), (15, "orange"), (45, "gold"), (63, "yellow"),
+    (75, "lime green"), (95, "green"), (150, "teal"), (180, "cyan"),
+    (200, "sky blue"), (225, "blue"), (255, "indigo"), (270, "purple"),
+    (300, "magenta"), (330, "pink"), (345, "red"),
+]
+
+
+def _rgb_to_hsv(rgb: tuple[int, int, int]) -> tuple[float, float, float]:
+    """Return (hue 0-360, saturation 0-1, value 0-1) for an RGB triple."""
+    r, g, b = (c / 255.0 for c in rgb)
+    mx, mn = max(r, g, b), min(r, g, b)
+    chroma = mx - mn
+    if chroma == 0:
+        hue = 0.0
+    elif mx == r:
+        hue = 60 * (((g - b) / chroma) % 6)
+    elif mx == g:
+        hue = 60 * (((b - r) / chroma) + 2)
+    else:
+        hue = 60 * (((r - g) / chroma) + 4)
+    sat = 0.0 if mx == 0 else chroma / mx
+    return hue % 360, sat, mx
+
+
+def accent_name(rgb: tuple[int, int, int]) -> str:
+    """Name a colour by its hue, robust to low saturation.
+
+    Unlike :func:`nearest_name` (pure RGB nearest-neighbour, which can collapse a
+    pale hue onto a neutral gray anchor), this routes neutral colours to a
+    lightness-based neutral name and chromatic colours to a hue bucket. Used for
+    the accent line, where preserving the *hue* of a brand colour is the point.
+    """
+    hue, sat, val = _rgb_to_hsv(rgb)
+
+    # Neutral: too little saturation to carry a hue -> name by lightness.
+    if sat < 0.12:
+        if val < 0.18:
+            return "black"
+        if val < 0.40:
+            return "dark gray"
+        if val < 0.78:
+            return "gray"
+        if val < 0.93:
+            return "light gray"
+        return "white"
+
+    base = "red"
+    for lower, name in _HUE_NAMES:
+        if hue >= lower:
+            base = name
+    if val < 0.35:
+        return f"dark {base}"
+    if sat < 0.45 and val > 0.7:
+        return f"light {base}"
+    return base

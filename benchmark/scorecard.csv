@@ -17,10 +17,10 @@ app_ui.png,4,perceptual,Which setting is toggled off?,Privacy,0,1
 logo.png,1,factual,What is the brand name in this logo?,lume.js,1,1
 logo.png,2,factual,What is the tagline shown beneath the brand name?,ILLUMINATE YOUR UI,1,1
 logo.png,3,perceptual,What does the logo's emblem depict?,A stylised sun / crescent (light) mark,0,1
-logo.png,4,factual,What are the main accent colours used?,"Amber/orange and dark slate, on white",0,1
+logo.png,4,factual,What are the main accent colours used?,"Amber/orange and dark slate, on white",0.5,1
 blindsight_logo.png,1,factual,What is the brand name in this logo?,BLINDSIGHT,1,1
 blindsight_logo.png,2,perceptual,What does the emblem depict?,An eye dissolving into binary digits,0,1
-blindsight_logo.png,3,factual,What are the main colours used?,"Navy blue / indigo and cyan, on white",0.5,1
+blindsight_logo.png,3,factual,What are the main colours used?,"Navy blue / indigo and cyan, on white",1,1
 portrait_face.jpg,1,factual,How many people are in this image?,1,1,1
 portrait_face.jpg,2,factual,What is the dominant background colour?,Brown,1,1
 portrait_face.jpg,3,perceptual,Is the person smiling?,"Yes, a slight closed-mouth smile",0,1

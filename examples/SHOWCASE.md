@@ -71,15 +71,17 @@ uncertainty honestly.
 |---|---|---|
 | Brand name? | ✅ | OCR: "BLINDSIGHT" (+ tagline "SEE DATA, NOT IMAGES") at 95.0% (reliable) |
 | What does the emblem depict? | ❌ | Shapes see a polygon + squares — no "it's an eye made of binary" understanding |
-| Main colours? | ✅ | Colors: white + navy blue #121154 |
+| Main colours? | ✅ | Colors: dominant white + navy blue #121154, **accent: light cyan #9CEDF3** |
 
 This logo sets the name in a clean sans-serif, so OCR reads the brand and tagline
 **correctly and confidently** at 95% (though it returns them slightly out of
 reading order). The navy wordmark covers a large enough dark area that the colour
-module captures it cleanly (`navy blue #121154`). The emblem itself (an eye
-dissolving into binary) is invisible to the descriptor: it sees shapes, not
-meaning. Paired deliberately with `logo.png` below — same clean-font success on
-the text, but opposite outcome on **colour**, for a reason worth understanding.
+module captures it as a *dominant* colour (`navy blue #121154`), and the small
+cyan detail surfaces on the **accent line** — so the descriptor hands the model
+both brand colours. The emblem itself (an eye dissolving into binary) is invisible
+to the descriptor: it sees shapes, not meaning. Paired with `logo.png` below,
+whose amber identity is an even thinner accent: both logos now recover their brand
+colour — one as a dominant, one purely from the accent line.
 
 ---
 
@@ -110,24 +112,27 @@ and OCR reads the value labels out of spatial order ("…120 Qi Q2 Q3 280"). A
 model *might* infer Q4=280 is highest from the numbers, but the descriptor
 doesn't hand it the bar→value mapping. Charts are a "send the image" signal.
 
-### `logo.png` — clean wordmark, accent colour lost (the `lume.js` logo)
+### `logo.png` — clean wordmark, brand colour recovered from a thin accent (the `lume.js` logo)
 
 | Question | Verdict | From the descriptor |
 |---|---|---|
 | Brand name? | ✅ | OCR: "lume.js" at 73.1% (uncertain, but correct) |
 | Tagline? | ✅ | OCR: "ILLUMINATE YOUR UI" |
 | What does the emblem depict? | ❌ | Shapes see four small polygons (the sun's rays) — no "it's a sun" |
-| Main accent colours? | ❌ | Colors: white #FFFFFF (87%), grayscale=true — the amber accent never surfaces |
+| Main accent colours? | ⚠️ | Colors: dominant white #FFFFFF (87%), **accent: orange #BA8F49** — the amber brand colour is recovered; the dark-slate wordmark is too small to clear the threshold |
 
 The clean wordmark reads: both the brand and the tagline come through. The 73%
 confidence — lower than `blindsight_logo`'s 95% — is the OCR honestly flagging
-noise, since it also tried to read the sun-ray glyphs (`i ~( "nw`). The
-instructive failure here is **colour**. The logo's identity is amber, but amber is
-a thin accent on a white field, so Pillow's quantiser reports 87% white and even
-flags the whole image grayscale. A brand colour that owns little area simply does
-not survive into the descriptor — the exact opposite of `blindsight_logo.png`
-above, whose large navy wordmark does. "What colour is this logo" is answerable
-from text only when the colour occupies enough pixels to be dominant.
+noise, since it also tried to read the sun-ray glyphs (`i ~( "nw`). Colour is the
+instructive case. The logo's identity is amber, but amber is a thin accent on a
+white field, so the *dominant* palette is 87% white and the image even reads as
+grayscale on average — the dominant line alone would miss the brand entirely. The
+colour module therefore adds an **accent line** that surfaces chromatic colours
+sitting below the dominance floor, ranked by area. Here it recovers `orange` — the
+amber mark — which is exactly what the question asks for. The dark-slate `lume`
+wordmark is too small and too neutral to clear the accent threshold, so the answer
+is correct but incomplete: a partial, not a miss. This is the mirror of
+`blindsight_logo.png` above, whose navy is large enough to be dominant outright.
 
 ---
 
@@ -192,10 +197,10 @@ hallucinating — a safe failure.
 
 1. **Documents, codes, and UI text** — Blindsight answers as well as a vision
    model, far cheaper. This is the project's home turf.
-2. **Charts, logos, low-contrast text** — partial. The descriptor often surfaces
-   the right raw tokens (brand name, tagline, chart title) but loses the
-   structure, the emblem's meaning, or a small-area accent colour; the confidence
-   scores flag when to distrust it.
+2. **Charts, logos, low-contrast text** — partial. The descriptor surfaces the
+   right raw tokens (brand name, tagline, chart title) and now recovers small-area
+   brand colours through the accent line, but still loses chart structure and the
+   emblem's meaning; the confidence scores flag when to distrust it.
 3. **Photographs and scene meaning** — out of scope by design. The descriptor
    reports honest negatives ("none detected", count 0) instead of guessing,
    which is exactly the cue to escalate to a real vision model.

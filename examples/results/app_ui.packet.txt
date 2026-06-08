@@ -23,6 +23,7 @@ modules: 8/8 available
 
 [Colors]
   dominant: white #F5F6F8 (38%), white #FFFFFF (31%), blue #2062E8 (19%)
+  accent: light sky blue #B4CBE2 (3%)
   grid:
     TL:light blue  TC:light blue  TR:light blue
     ML:white  MC:white  MR:white

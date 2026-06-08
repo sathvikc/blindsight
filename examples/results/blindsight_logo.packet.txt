@@ -23,6 +23,7 @@ modules: 8/8 available
 
 [Colors]
   dominant: white #FFFFFF (79%), navy blue #121154 (5%)
+  accent: light cyan #9CEDF3 (3%)
   grid:
     TL:white  TC:light gray  TR:white
     ML:white  MC:light gray  MR:white
