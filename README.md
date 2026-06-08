@@ -183,7 +183,34 @@ python benchmark/run_benchmark.py --images ./images --out benchmark/out \
 
 For each image you get a `*.descriptor.txt` and a `*.packet.txt`. Feed the
 packets to your text model, feed the real images to a multimodal model as the
-control, and score both against your ground truth.
+control, and score both against your ground truth. `benchmark/make_test_sheet.py`
+turns the ground truth into a gradeable `scorecard.csv`, `benchmark/score.py`
+tallies it, and `benchmark/token_savings.py` reports the cost side with no API
+key. See [`benchmark/README.md`](benchmark/README.md) for the full loop.
+
+### Results
+
+Run on the eleven showcase images (36 questions), graded with GPT-5 mini once on
+the descriptor text alone (condition A) and once on the real image (condition B):
+
+| Question type | Descriptor (text) | Image (control) |
+|---|---|---|
+| **Factual** (what does it say / what value / how many) | **80%** | 94% |
+| **Perceptual** (mood, scene meaning, expression, landmark) | 11% | 100% |
+
+So on the factual subset the text descriptor recovers ~85% of full-vision
+accuracy while using **~52% fewer input tokens** (per `token_savings.py`), and on
+perceptual questions it honestly defers rather than guessing — which is the
+signal to fall back to the real image.
+
+One case is worth singling out: for *"what URL does this QR code contain?"* the
+descriptor **beat** the multimodal model (1.0 vs 0.0), because Blindsight decodes
+the code with OpenCV while a vision model cannot read a QR from pixels alone. The
+classical decoder, handed over as cheap text, is exactly the point.
+
+These numbers are a single graded pass on a small, deliberately varied set, not a
+statistical benchmark — reproduce them with your own images and model via the
+loop above.
 
 ## Design notes
 
