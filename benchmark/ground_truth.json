@@ -1,0 +1,62 @@
+{
+  "_about": "Ground-truth answers for the showcase images. 'type' marks whether the question is FACTUAL (symbolic info text can carry) or PERCEPTUAL (needs the pixels). The benchmark's whole point is the score on the factual subset.",
+
+  "receipt.png": [
+    {"q": "What store issued this receipt?", "a": "Blue Cart Market", "type": "factual"},
+    {"q": "What is the total amount?", "a": "Rs 687.75", "type": "factual"},
+    {"q": "How many eggs were purchased and at what price?", "a": "12 eggs (one pack) for Rs 120.00", "type": "factual"},
+    {"q": "What date and time was this receipt issued?", "a": "2026-05-12 at 14:32", "type": "factual"}
+  ],
+  "qr_code.png": [
+    {"q": "Is there a QR code in this image?", "a": "Yes", "type": "factual"},
+    {"q": "What URL or value does the code contain?", "a": "https://sathvikc.github.io/lume-js/", "type": "factual"}
+  ],
+  "barcode.png": [
+    {"q": "What type of code is shown?", "a": "A 1D barcode (EAN-13)", "type": "factual"},
+    {"q": "What is the decoded barcode number?", "a": "5901234123457", "type": "factual"}
+  ],
+  "bar_chart.png": [
+    {"q": "What is the title of this chart?", "a": "Quarterly Revenue (Cr)", "type": "factual"},
+    {"q": "How many bars does the chart contain?", "a": "4 (Q1-Q4)", "type": "factual"},
+    {"q": "Which quarter had the highest revenue?", "a": "Q4 (280)", "type": "factual"}
+  ],
+  "app_ui.png": [
+    {"q": "What screen of the app is this?", "a": "Settings", "type": "factual"},
+    {"q": "List the menu options shown.", "a": "Account, Notifications, Privacy, Appearance, Storage", "type": "factual"},
+    {"q": "What colour is the primary action button?", "a": "Blue (the Save button)", "type": "factual"},
+    {"q": "Which setting is toggled off?", "a": "Privacy", "type": "perceptual"}
+  ],
+  "logo.png": [
+    {"q": "What is the brand name in this logo?", "a": "lume.js", "type": "factual"},
+    {"q": "What is the tagline shown beneath the brand name?", "a": "ILLUMINATE YOUR UI", "type": "factual"},
+    {"q": "What does the logo's emblem depict?", "a": "A stylised sun / crescent (light) mark", "type": "perceptual"},
+    {"q": "What are the main accent colours used?", "a": "Amber/orange and dark slate, on white", "type": "factual"}
+  ],
+  "blindsight_logo.png": [
+    {"q": "What is the brand name in this logo?", "a": "BLINDSIGHT", "type": "factual"},
+    {"q": "What does the emblem depict?", "a": "An eye dissolving into binary digits", "type": "perceptual"},
+    {"q": "What are the main colours used?", "a": "Navy blue / indigo and cyan, on white", "type": "factual"}
+  ],
+  "portrait_face.jpg": [
+    {"q": "How many people are in this image?", "a": "1", "type": "factual"},
+    {"q": "What is the dominant background colour?", "a": "Brown", "type": "factual"},
+    {"q": "Is the person smiling?", "a": "Yes, a slight closed-mouth smile", "type": "perceptual"},
+    {"q": "Approximately what is the person's age?", "a": "Early teens (~12-14)", "type": "perceptual"}
+  ],
+  "landscape.jpg": [
+    {"q": "Is this an indoor or outdoor scene?", "a": "Outdoor", "type": "perceptual"},
+    {"q": "What is the dominant colour of the upper half of the image?", "a": "Blue sky with white clouds", "type": "factual"},
+    {"q": "Is there any readable text in this image?", "a": "No", "type": "factual"},
+    {"q": "What city or landmark is shown?", "a": "New York City (Manhattan skyline; Empire State Building)", "type": "perceptual"}
+  ],
+  "street_scene.jpg": [
+    {"q": "What is the single dominant colour in this image?", "a": "Blue", "type": "factual"},
+    {"q": "Are there any human faces in the image?", "a": "No", "type": "factual"},
+    {"q": "What objects are sitting on the table?", "a": "A patterned glass holding a plant sprig, and a clear glass jar", "type": "perceptual"}
+  ],
+  "photo_square.jpg": [
+    {"q": "What text is visible in the image?", "a": "TURN TO CLEAR VISION", "type": "factual"},
+    {"q": "How many human faces are present?", "a": "0", "type": "factual"},
+    {"q": "Describe what is physically happening in this scene.", "a": "Looking through a coin-operated tower viewer at a hazy city skyline from an observation deck", "type": "perceptual"}
+  ]
+}

@@ -1,0 +1,37 @@
+image,q_index,type,question,correct_answer,descriptor_grade,image_grade
+receipt.png,1,factual,What store issued this receipt?,Blue Cart Market,1,1
+receipt.png,2,factual,What is the total amount?,Rs 687.75,1,1
+receipt.png,3,factual,How many eggs were purchased and at what price?,12 eggs (one pack) for Rs 120.00,1,1
+receipt.png,4,factual,What date and time was this receipt issued?,2026-05-12 at 14:32,1,1
+qr_code.png,1,factual,Is there a QR code in this image?,Yes,1,1
+qr_code.png,2,factual,What URL or value does the code contain?,https://sathvikc.github.io/lume-js/,1,0
+barcode.png,1,factual,What type of code is shown?,A 1D barcode (EAN-13),1,1
+barcode.png,2,factual,What is the decoded barcode number?,5901234123457,1,1
+bar_chart.png,1,factual,What is the title of this chart?,Quarterly Revenue (Cr),1,1
+bar_chart.png,2,factual,How many bars does the chart contain?,4 (Q1-Q4),0,1
+bar_chart.png,3,factual,Which quarter had the highest revenue?,Q4 (280),0,1
+app_ui.png,1,factual,What screen of the app is this?,Settings,1,1
+app_ui.png,2,factual,List the menu options shown.,"Account, Notifications, Privacy, Appearance, Storage",0.5,1
+app_ui.png,3,factual,What colour is the primary action button?,Blue (the Save button),1,1
+app_ui.png,4,perceptual,Which setting is toggled off?,Privacy,0,1
+logo.png,1,factual,What is the brand name in this logo?,lume.js,1,1
+logo.png,2,factual,What is the tagline shown beneath the brand name?,ILLUMINATE YOUR UI,1,1
+logo.png,3,perceptual,What does the logo's emblem depict?,A stylised sun / crescent (light) mark,0,1
+logo.png,4,factual,What are the main accent colours used?,"Amber/orange and dark slate, on white",0,1
+blindsight_logo.png,1,factual,What is the brand name in this logo?,BLINDSIGHT,1,1
+blindsight_logo.png,2,perceptual,What does the emblem depict?,An eye dissolving into binary digits,0,1
+blindsight_logo.png,3,factual,What are the main colours used?,"Navy blue / indigo and cyan, on white",0.5,1
+portrait_face.jpg,1,factual,How many people are in this image?,1,1,1
+portrait_face.jpg,2,factual,What is the dominant background colour?,Brown,1,1
+portrait_face.jpg,3,perceptual,Is the person smiling?,"Yes, a slight closed-mouth smile",0,1
+portrait_face.jpg,4,perceptual,Approximately what is the person's age?,Early teens (~12-14),0,1
+landscape.jpg,1,perceptual,Is this an indoor or outdoor scene?,Outdoor,1,1
+landscape.jpg,2,factual,What is the dominant colour of the upper half of the image?,Blue sky with white clouds,0.5,1
+landscape.jpg,3,factual,Is there any readable text in this image?,No,1,1
+landscape.jpg,4,perceptual,What city or landmark is shown?,New York City (Manhattan skyline; Empire State Building),0,1
+street_scene.jpg,1,factual,What is the single dominant colour in this image?,Blue,1,1
+street_scene.jpg,2,factual,Are there any human faces in the image?,No,1,1
+street_scene.jpg,3,perceptual,What objects are sitting on the table?,"A patterned glass holding a plant sprig, and a clear glass jar",0,1
+photo_square.jpg,1,factual,What text is visible in the image?,TURN TO CLEAR VISION,0,0.5
+photo_square.jpg,2,factual,How many human faces are present?,0,1,1
+photo_square.jpg,3,perceptual,Describe what is physically happening in this scene.,Looking through a coin-operated tower viewer at a hazy city skyline from an observation deck,0,1
