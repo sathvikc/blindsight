@@ -45,6 +45,8 @@ def extract(path: str, modules: Iterable[str] | None = None) -> ImageDescriptor:
 def _run_module(module, ctx) -> ModuleResult:
     try:
         data = module.run(ctx)
+        # Make this module's output available to later fusion modules.
+        ctx.results[module.NAME] = data
         return ModuleResult(
             name=module.NAME,
             title=module.TITLE,

@@ -63,8 +63,10 @@ def run(ctx: ImageContext) -> dict[str, Any]:
         region_name(x + bw / 2, y + bh / 2, w, h)
         for (x, y, bw, bh) in detections
     ]
+    # Boxes normalised to [0, 1] for the layout fusion module.
+    boxes = [(x / w, y / h, bw / w, bh / h) for (x, y, bw, bh) in detections]
 
-    return {"count": len(detections), "positions": positions}
+    return {"count": len(detections), "positions": positions, "boxes": boxes}
 
 
 def render(data: dict[str, Any]) -> list[str]:

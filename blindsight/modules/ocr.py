@@ -134,6 +134,24 @@ def run(ctx: ImageContext) -> dict[str, Any]:
     line_texts = _order_lines(words)
     avg_conf = round(_conf_mass(words) / len(words), 1)
 
+    # Per-word boxes normalised to [0, 1], for the layout fusion module. Pixel
+    # coords are mapped back through ``scale`` (refinement upscale) and the
+    # original image dimensions so every module's boxes share one coordinate space.
+    img_w, img_h = ctx.pil.size
+    word_boxes = [
+        {
+            "text": w["text"],
+            "conf": w["conf"],
+            "box": (
+                (w["left"] / scale) / max(img_w, 1),
+                (w["top"] / scale) / max(img_h, 1),
+                (w["width"] / scale) / max(img_w, 1),
+                (w["height"] / scale) / max(img_h, 1),
+            ),
+        }
+        for w in words
+    ]
+
     # Locate and size the largest text element as a representative anchor,
     # mapping coordinates back to the original image scale.
     biggest = max(words, key=lambda w: w["height"])
@@ -149,6 +167,7 @@ def run(ctx: ImageContext) -> dict[str, Any]:
         "confidence": avg_conf,
         "position": position,
         "size": size,
+        "words": word_boxes,
     }
 
 

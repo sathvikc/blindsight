@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/app_ui.png
 size: 390x700
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 390x700
@@ -44,6 +44,20 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 11 (shape 1, text 10)
+  reading order (rows, top→bottom):
+    1. Account @
+    2. Notifications @
+    3. Privacy
+    4. Appearance @
+    5. Storage @
+    6. Save
+  pattern breaks (a repeating element with a gap):
+    - '@' aligns down a column on other rows but is missing at: Privacy
+  contains:
+    - rectangle ⊃ Save
 
 [Codes]
   none

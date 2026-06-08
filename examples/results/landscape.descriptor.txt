@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/landscape.jpg
 size: 800x533
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 800x533
@@ -32,6 +32,9 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 1 (shape 1)
 
 [Codes]
   none

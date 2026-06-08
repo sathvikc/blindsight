@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/portrait_face.jpg
 size: 1024x1024
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 1024x1024
@@ -38,6 +38,11 @@ modules: 8/8 available
 [Faces]
   count: 1
   positions: center
+
+[Layout]
+  nodes: 1 (face 1)
+  reading order (rows, top→bottom):
+    1. face
 
 [Codes]
   none

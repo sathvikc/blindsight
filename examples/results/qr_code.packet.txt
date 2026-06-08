@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/qr_code.png
 size: 360x360
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 360x360
@@ -40,6 +40,11 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 4 (shape 4)
+  contains:
+    - square ⊃ square, square, square
 
 [Codes]
   QR: https://sathvikc.github.io/lume-js/

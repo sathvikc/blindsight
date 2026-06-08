@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/receipt.png
 size: 420x560
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 420x560
@@ -46,6 +46,23 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 45 (text 45)
+  reading order (rows, top→bottom):
+    1. BLUE CART MARKET
+    2. 123 Banjara Hills, Hyd
+    3. Date: 2026-05-12 14:32
+    4. Receipt #: 004871
+    5. Milk IL x2 90.00
+    6. Brown Bread x1 45.00
+    7. Eggs (12) x1 120.00
+    8. Bananas 1kg x1 60.00
+    9. Coffee 200g x1 340.00
+    10. SUBTOTAL 655.00
+    11. GST 5% 32.75
+    12. TOTAL Rs 687.75
+    13. THANK YOU FOR SHOPPING
 
 [Codes]
   none

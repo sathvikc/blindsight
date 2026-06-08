@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/barcode.png
 size: 523x280
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 523x280
@@ -51,6 +51,11 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 2 (shape 1, text 1)
+  reading order (rows, top→bottom):
+    1. 5901234123457
 
 [Codes]
   none

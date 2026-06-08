@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/photo_square.jpg
 size: 640x640
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 640x640
@@ -34,6 +34,9 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 1 (shape 1)
 
 [Codes]
   none

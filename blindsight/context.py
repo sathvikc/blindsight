@@ -7,7 +7,8 @@ or OpenCV's BGR) without re-decoding the file.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
 
 import numpy as np
 from PIL import Image
@@ -31,6 +32,10 @@ class ImageContext:
     gray: np.ndarray          # H x W, uint8
     width: int
     height: int
+    # Data from modules that have already run, keyed by module NAME. Lets a
+    # later fusion module (e.g. ``layout``) reason over earlier detections
+    # without re-running them. Boxes stored here are normalised to [0, 1].
+    results: dict[str, Any] = field(default_factory=dict)
 
     @property
     def bgr(self) -> np.ndarray:

@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/bar_chart.png
 size: 640x420
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 640x420
@@ -41,6 +41,22 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 11 (shape 1, text 10)
+  reading order (rows, top→bottom):
+    1. Quarterly Revenue (Cr)
+    2. 280
+    3. 200
+    4. 160
+    5. 120
+    6. Qi Q2 Q3
+  aligned columns (top→bottom):
+    - 120 / Qi
+    - 200 / Q2
+    - 160 / Q3
+  contains:
+    - polygon(7) ⊃ 280, 200, 160, 120
 
 [Codes]
   none

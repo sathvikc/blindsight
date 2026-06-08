@@ -71,11 +71,14 @@ def run(ctx: ImageContext) -> dict[str, Any]:
             continue
         cx = moments["m10"] / moments["m00"]
         cy = moments["m01"] / moments["m00"]
+        bx, by, bw, bh = cv2.boundingRect(contour)
         shapes.append({
             "shape": _classify(contour),
             "size": size_bucket(area, image_area),
             "position": region_name(cx, cy, w, h),
             "area_frac": round(area / image_area, 3),
+            # Bounding box normalised to [0, 1] for the layout fusion module.
+            "box": (bx / w, by / h, bw / w, bh / h),
         })
 
     shapes.sort(key=lambda s: s["area_frac"], reverse=True)

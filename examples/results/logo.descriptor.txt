@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/logo.png
 size: 1024x1024
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 1024x1024
@@ -39,6 +39,15 @@ modules: 8/8 available
 
 [Faces]
   count: 0
+
+[Layout]
+  nodes: 7 (text 7)
+  reading order (rows, top→bottom):
+    1. i
+    2. ~(
+    3. “nw
+    4. lume.js
+    5. ILLUMINATE YOUR UI
 
 [Codes]
   none
