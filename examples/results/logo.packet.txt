@@ -16,17 +16,17 @@ modules: 8/8 available
   contrast: medium
 
 [OCR]
-  text: "MAGES SEE DATA, NOT BLINDSIGHT"
-  confidence: 95.0% (reliable)
-  position: center
+  text: "i ~( “nw lume.js ILLUMINATE YOUR UI"
+  confidence: 73.1% (uncertain)
+  position: top-center
   size: large
 
 [Colors]
-  dominant: white #FFFFFF (79%), navy blue #121154 (5%)
+  dominant: white #FFFFFF (87%)
   grid:
-    TL:white  TC:light gray  TR:white
-    ML:white  MC:light gray  MR:white
-    BL:white  BC:white  BR:white
+    TL:white  TC:white  TR:white
+    ML:white  MC:white  MR:white
+    BL:white  BC:light gray  BR:white
   grayscale: true
 
 [Structure]
@@ -35,10 +35,11 @@ modules: 8/8 available
   layout: structured
 
 [Shapes]
-  count: 3
-  - polygon(7), medium, center
-  - square, small, center
-  - square, small, left
+  count: 4
+  - polygon(7), small, bottom-center
+  - polygon(7), small, bottom-left
+  - polygon(6), small, bottom-center
+  - polygon(8), small, bottom-right
 
 [Faces]
   count: 0
@@ -53,5 +54,6 @@ modules: 8/8 available
 
 QUESTIONS:
 1. What is the brand name in this logo?
-2. What geometric shape is the logo built around?
-3. What are the main colours used?
+2. What is the tagline shown beneath the brand name?
+3. What does the logo's emblem depict?
+4. What are the main accent colours used?

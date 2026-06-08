@@ -73,13 +73,13 @@ uncertainty honestly.
 | What does the emblem depict? | ❌ | Shapes see a polygon + squares — no "it's an eye made of binary" understanding |
 | Main colours? | ✅ | Colors: white + navy blue #121154 |
 
-Paired deliberately with `logo.png` below: this logo sets the name in a clean
-sans-serif, so OCR reads the brand and tagline **correctly and confidently**
-(though it returns them slightly out of reading order). The difference between
-this success and the NOVA failure is entirely font styling — which is exactly the
-variable that decides whether the text path is enough. The emblem itself (an eye
+This logo sets the name in a clean sans-serif, so OCR reads the brand and tagline
+**correctly and confidently** at 95% (though it returns them slightly out of
+reading order). The navy wordmark covers a large enough dark area that the colour
+module captures it cleanly (`navy blue #121154`). The emblem itself (an eye
 dissolving into binary) is invisible to the descriptor: it sees shapes, not
-meaning.
+meaning. Paired deliberately with `logo.png` below — same clean-font success on
+the text, but opposite outcome on **colour**, for a reason worth understanding.
 
 ---
 
@@ -110,19 +110,24 @@ and OCR reads the value labels out of spatial order ("…120 Qi Q2 Q3 280"). A
 model *might* infer Q4=280 is highest from the numbers, but the descriptor
 doesn't hand it the bar→value mapping. Charts are a "send the image" signal.
 
-### `logo.png` — stylised branding
+### `logo.png` — clean wordmark, accent colour lost (the `lume.js` logo)
 
 | Question | Verdict | From the descriptor |
 |---|---|---|
-| Brand name? | ❌ | OCR misread "NOVA" as "Orem" (60.0% confidence) |
-| Geometric shape it's built around? | ⚠️ | Shapes report polygons/circles, but not cleanly "hexagon" |
-| Main colours? | ✅ | Colors: white + blue #2163E8 |
+| Brand name? | ✅ | OCR: "lume.js" at 73.1% (uncertain, but correct) |
+| Tagline? | ✅ | OCR: "ILLUMINATE YOUR UI" |
+| What does the emblem depict? | ❌ | Shapes see four small polygons (the sun's rays) — no "it's a sun" |
+| Main accent colours? | ❌ | Colors: white #FFFFFF (87%), grayscale=true — the amber accent never surfaces |
 
-Stylised display type defeats OCR — exactly the limitation the README warns
-about. The low confidence (60%) is the tell: a consumer should treat this brand
-name as unreliable and verify against the image. Contrast with
-`blindsight_logo.png` above, where a clean font reads correctly at 85% — same
-module, opposite outcome, font styling the only difference.
+The clean wordmark reads: both the brand and the tagline come through. The 73%
+confidence — lower than `blindsight_logo`'s 95% — is the OCR honestly flagging
+noise, since it also tried to read the sun-ray glyphs (`i ~( "nw`). The
+instructive failure here is **colour**. The logo's identity is amber, but amber is
+a thin accent on a white field, so Pillow's quantiser reports 87% white and even
+flags the whole image grayscale. A brand colour that owns little area simply does
+not survive into the descriptor — the exact opposite of `blindsight_logo.png`
+above, whose large navy wordmark does. "What colour is this logo" is answerable
+from text only when the colour occupies enough pixels to be dominant.
 
 ---
 
@@ -187,9 +192,10 @@ hallucinating — a safe failure.
 
 1. **Documents, codes, and UI text** — Blindsight answers as well as a vision
    model, far cheaper. This is the project's home turf.
-2. **Charts, stylised logos, low-contrast text** — partial. The descriptor often
-   surfaces the right raw tokens but loses the structure or misreads them; the
-   confidence scores flag when to distrust it.
+2. **Charts, logos, low-contrast text** — partial. The descriptor often surfaces
+   the right raw tokens (brand name, tagline, chart title) but loses the
+   structure, the emblem's meaning, or a small-area accent colour; the confidence
+   scores flag when to distrust it.
 3. **Photographs and scene meaning** — out of scope by design. The descriptor
    reports honest negatives ("none detected", count 0) instead of guessing,
    which is exactly the cue to escalate to a real vision model.

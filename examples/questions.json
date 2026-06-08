@@ -26,8 +26,9 @@
   ],
   "logo.png": [
     "What is the brand name in this logo?",
-    "What geometric shape is the logo built around?",
-    "What are the main colours used?"
+    "What is the tagline shown beneath the brand name?",
+    "What does the logo's emblem depict?",
+    "What are the main accent colours used?"
   ],
   "blindsight_logo.png": [
     "What is the brand name in this logo?",
