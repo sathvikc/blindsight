@@ -21,9 +21,9 @@ modules: 9/9 available
 [Colors]
   dominant: white #FFFFFF (52%), black #000000 (17%), black #020202 (7%), white #FBFBFB (5%), gray #7C7C7C (4%)
   grid:
-    TL:light gray  TC:light gray  TR:light gray
-    ML:gray  MC:gray  MR:light gray
-    BL:light gray  BC:light gray  BR:light gray
+    TL:white  TC:white  TR:white
+    ML:white  MC:black  MR:white
+    BL:white  BC:white  BR:white
   grayscale: true
 
 [Regions]

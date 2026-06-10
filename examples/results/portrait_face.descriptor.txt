@@ -16,9 +16,9 @@ modules: 9/9 available
 [Colors]
   dominant: dark brown #402D20 (20%), gray #AE8776 (14%), gray #946E5F (12%), dark brown #362B24 (12%), salmon #CBA290 (12%)
   grid:
-    TL:dark brown  TC:gray  TR:dark brown
-    ML:dark gray  MC:gray  MR:brown
-    BL:dark gray  BC:gray  BR:dark gray
+    TL:dark brown  TC:salmon  TR:dark brown
+    ML:dark brown  MC:salmon  MR:dark brown
+    BL:dark brown  BC:gray  BR:black
   grayscale: false
 
 [Regions]

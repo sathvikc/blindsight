@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
+from . import layout
 from .context import ModuleUnavailable, load_context
 from .descriptor import ImageDescriptor, ModuleResult
 from .modules import REGISTRY
@@ -33,6 +34,18 @@ def extract(path: str, modules: Iterable[str] | None = None) -> ImageDescriptor:
         if selected is not None and module.NAME not in selected:
             continue
         results.append(_run_module(module, ctx))
+
+    # Derived cross-module section: link OCR text to the regions it sits in.
+    # Built after the modules so it never affects their independence; absent
+    # when either side is unavailable or empty.
+    linked = layout.build(results)
+    if linked is not None:
+        anchor = next(
+            (i for i, r in enumerate(results) if r.name == "regions"), None)
+        if anchor is None:
+            results.append(linked)
+        else:
+            results.insert(anchor + 1, linked)
 
     return ImageDescriptor(
         source=path,

@@ -25,7 +25,7 @@ $ blindsight photo.jpg
 === IMAGE DESCRIPTOR ===
 source: photo.jpg
 size: 640x360
-modules: 8/8 available
+modules: 10/10 available
 
 [Stats]
   resolution: 640x360
@@ -53,6 +53,10 @@ modules: 8/8 available
   - navy blue #1A3C5E, 19%, top-center, wide, smooth
   - red #DC1E1E, 6%, right, tall, smooth
   bands top->bottom: navy blue (0%-22%)
+
+[Layout]
+  "Welcome to Hyderabad" inside navy blue region (top-center)
+  "SALE 50% Off" inside red region (right)
 
 [Structure]
   edge_density: low
@@ -108,11 +112,15 @@ included [benchmark](#benchmark) exists to measure exactly where that line sits.
 | `ocr`       | text in reading-order lines, confidence, position, size *(optional)* |
 | `colors`    | dominant + accent palette (hex + name), 3×3 colour grid, grayscale |
 | `regions`   | coloured regions with geometry, plus relations: bands, gradients, row stacks, shared baselines/left edges with per-element sizes |
+| `layout`*   | links OCR text to the region it sits in; labels baseline elements with the text below them |
 | `structure` | edge density, dominant line orientations, layout character        |
 | `shapes`    | object count, shape class, size, position                         |
 | `faces`     | face count and rough positions (classical Haar cascades)          |
 | `codes`     | QR / barcode values                                               |
 | `exif`      | capture date, device, GPS presence, orientation                   |
+
+\* `layout` is derived from the OCR and regions results after extraction; it
+appears only when both produced content, and cannot be selected directly.
 
 ## Install
 
@@ -265,6 +273,14 @@ should be sent instead.
 pip install pytest
 python -m pytest tests/
 ```
+
+Beyond unit tests, `tests/test_random_property.py` is a property-based suite:
+each test draws random instances of an image *family* (bar charts, horizontal
+bars, gradients, UI row layouts, flat/noise images) from seeded RNGs and
+asserts that the regions module recovers counts, orderings and proportions —
+and invents no structure on featureless images. New seeds are new images, so
+the suite tests the families, not a fixed set of pictures. CI runs it on every
+push.
 
 ## License
 

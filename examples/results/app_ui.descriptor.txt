@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/app_ui.png
 size: 390x700
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 390x700
@@ -20,9 +20,9 @@ modules: 9/9 available
   dominant: white #F5F6F8 (38%), white #FFFFFF (31%), blue #2062E8 (19%)
   accent: light sky blue #B4CBE2 (3%)
   grid:
-    TL:light blue  TC:light blue  TR:light blue
+    TL:white  TC:white  TR:white
     ML:white  MC:white  MR:white
-    BL:light blue  BC:light blue  BR:light blue
+    BL:white  BC:white  BR:white
   grayscale: false
 
 [Regions]
@@ -36,6 +36,14 @@ modules: 9/9 available
   - white #FFFFFF, 6%, center, wide, smooth
   bands top->bottom: blue (0%-13%)
   rows: 5 white full-width rows stacked 18%-72%
+
+[Layout]
+  "Account @" inside white region (top-center)
+  "Notifications @" inside white region (top-center)
+  "Privacy" inside white region (center)
+  "Appearance @" inside white region (center)
+  "Storage @" inside white region (bottom-center)
+  "Save" inside blue region (bottom-center)
 
 [Structure]
   edge_density: low

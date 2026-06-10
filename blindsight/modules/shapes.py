@@ -78,6 +78,16 @@ def run(ctx: ImageContext) -> dict[str, Any]:
             "area_frac": round(area / image_area, 3),
         })
 
+    # A huge irregular polygon/blob is almost always several touching objects
+    # merged into one outline by edge dilation, not a real shape — reporting
+    # "polygon(7), large, center" only invites the model to hallucinate an
+    # object. Named shapes (rectangle, circle, ...) are kept at any size.
+    shapes = [
+        s for s in shapes
+        if s["area_frac"] < 0.15
+        or not (s["shape"].startswith("polygon") or s["shape"] == "blob")
+    ]
+
     shapes.sort(key=lambda s: s["area_frac"], reverse=True)
     shapes = shapes[:_MAX_SHAPES]
 
