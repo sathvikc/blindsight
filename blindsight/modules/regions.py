@@ -109,17 +109,22 @@ def _aspect(bbox: list[float]) -> str | None:
 
 
 def _bands(regions: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
+                                                   list[dict[str, Any]],
                                                    list[dict[str, Any]]]:
-    """Vertical composition: full-width bands plus repeated-row stacks.
+    """Vertical composition: full-width bands, gradients, repeated-row stacks.
 
-    Returns ``(bands, stacks)``. A band that vertically contains two or more
-    other bands is a page/canvas backdrop, not a compositional layer, and is
-    dropped. Three or more same-coloured bands of similar height collapse into
-    a single "stack" — the signature of list rows in a UI — so the output says
-    "5 white rows" instead of repeating five near-identical lines.
+    Returns ``(bands, stacks, gradients)``. A band that vertically contains two
+    or more other bands is a page/canvas backdrop, not a compositional layer,
+    and is dropped. Three or more *contiguous* bands whose colours shift step
+    by step are one smooth gradient (a sky, a vignette) that quantisation
+    sliced into strips — reported as a single gradient, never as fake "rows".
+    Three or more same-coloured bands of similar height *separated by gaps*
+    collapse into a "stack" — the signature of list rows in a UI — so the
+    output says "5 white rows" instead of repeating five near-identical lines.
     """
     bands = [
-        {"name": r["name"], "top": r["bbox"][1], "bottom": r["bbox"][3]}
+        {"name": r["name"], "hex": r["hex"],
+         "top": r["bbox"][1], "bottom": r["bbox"][3]}
         for r in regions
         if (r["bbox"][2] - r["bbox"][0]) >= _BAND_MIN_WIDTH and not r["background"]
     ]
@@ -134,6 +139,8 @@ def _bands(regions: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
         b for b in bands
         if sum(_contains(b, other) for other in bands) < 2
     ]
+
+    bands, gradients = _merge_gradients(bands)
 
     stacks: list[dict[str, Any]] = []
     by_name: dict[str, list[dict[str, Any]]] = {}
@@ -165,9 +172,54 @@ def _bands(regions: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
             stacked.extend(cluster)
     bands = [b for b in bands if b not in stacked]
 
-    if len(bands) < 2 and not stacks:
-        return [], []
-    return bands, stacks
+    if len(bands) < 2 and not stacks and not gradients:
+        return [], [], gradients
+    return bands, stacks, gradients
+
+
+def _merge_gradients(bands: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
+                                                           list[dict[str, Any]]]:
+    """Collapse runs of 3+ contiguous, colour-shifting bands into gradients.
+
+    Quantisation slices a smooth vertical gradient (sunset sky, vignette) into
+    stacked strips. Real UI rows are separated by background gaps; gradient
+    strips touch (no gap) and each strip's colour differs slightly from the
+    next. Reporting the run as one gradient avoids describing a sky as "rows".
+    """
+    def _rgb(band: dict[str, Any]) -> tuple[int, int, int]:
+        value = band["hex"].lstrip("#")
+        return tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
+
+    runs: list[list[dict[str, Any]]] = []
+    for band in bands:  # bands arrive sorted by top
+        if runs and band["top"] - runs[-1][-1]["bottom"] <= 0.01:
+            runs[-1].append(band)
+        else:
+            runs.append([band])
+
+    gradients: list[dict[str, Any]] = []
+    merged: list[dict[str, Any]] = []
+    for run in runs:
+        steps = [
+            sum((a - b) ** 2 for a, b in zip(_rgb(run[i]), _rgb(run[i + 1]))) ** 0.5
+            for i in range(len(run) - 1)
+        ]
+        end_to_end = sum(
+            (a - b) ** 2 for a, b in zip(_rgb(run[0]), _rgb(run[-1]))
+        ) ** 0.5
+        # A gradient *progresses*: each strip differs a little from the next
+        # (identical strips are one component, not a gradient) and the steps
+        # accumulate end to end. Alternating rows (white/gray/white/...) have
+        # large steps that cancel out, so the end-to-end distance stays small.
+        if len(run) >= 3 and min(steps) >= 8.0 and end_to_end >= 0.5 * sum(steps):
+            gradients.append({
+                "from": run[0]["name"],
+                "to": run[-1]["name"],
+                "top": run[0]["top"],
+                "bottom": run[-1]["bottom"],
+            })
+            merged.extend(run)
+    return [b for b in bands if b not in merged], gradients
 
 
 def _baseline_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -200,6 +252,11 @@ def _baseline_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
         # lower half; alignments higher up are coincidence, not structure.
         if sum(r["bbox"][3] for r in group) / len(group) < 0.5:
             continue
+        # Bar-like elements share a near-uniform thickness; wildly different
+        # widths mean the shared edge is coincidence, not a common axis.
+        widths = [r["bbox"][2] - r["bbox"][0] for r in group]
+        if max(widths) > 2.5 * max(min(widths), 1e-6):
+            continue
         group.sort(key=lambda r: (r["bbox"][0] + r["bbox"][2]) / 2)
         result.append({
             "baseline": round(sum(r["bbox"][3] for r in group) / len(group), 3),
@@ -212,19 +269,68 @@ def _baseline_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return result
 
 
+def _left_edge_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Groups of 3+ flat, non-background elements whose left edges align.
+
+    The horizontal twin of :func:`_baseline_groups`: horizontal bar charts,
+    lists and indented blocks share a left edge instead of a bottom edge.
+    Elements must be at least as wide as tall, and the shared edge must sit in
+    the left half — mirroring the baseline filters that reject coincidental
+    alignments elsewhere in the frame.
+    """
+    candidates = [
+        r for r in regions
+        if not r["background"]
+        and (r["bbox"][2] - r["bbox"][0]) < _BAND_MIN_WIDTH
+        and (r["bbox"][2] - r["bbox"][0]) >= (r["bbox"][3] - r["bbox"][1]) * 0.8
+    ]
+    candidates.sort(key=lambda r: r["bbox"][0])
+
+    groups: list[list[dict[str, Any]]] = []
+    for region in candidates:
+        if groups and abs(region["bbox"][0] - groups[-1][-1]["bbox"][0]) <= _BASELINE_TOL:
+            groups[-1].append(region)
+        else:
+            groups.append([region])
+
+    result: list[dict[str, Any]] = []
+    for group in groups:
+        if len(group) < 3:
+            continue
+        # A meaningful shared left edge (a value axis) hugs the left side.
+        if sum(r["bbox"][0] for r in group) / len(group) > 0.35:
+            continue
+        # Same uniform-thickness requirement as baselines, on the other axis.
+        heights = [r["bbox"][3] - r["bbox"][1] for r in group]
+        if max(heights) > 2.5 * max(min(heights), 1e-6):
+            continue
+        group.sort(key=lambda r: (r["bbox"][1] + r["bbox"][3]) / 2)
+        result.append({
+            "edge": round(sum(r["bbox"][0] for r in group) / len(group), 3),
+            "elements": [
+                {"name": r["name"],
+                 "width_frac": round(r["bbox"][2] - r["bbox"][0], 3)}
+                for r in group
+            ],
+        })
+    return result
+
+
 def run(ctx: ImageContext) -> dict[str, Any]:
     if cv2 is None:
         raise ModuleUnavailable("opencv-python is not installed")
 
     labels, rgb, gray = _segment(ctx.pil)
     regions = _components(labels, rgb, gray)
-    bands, stacks = _bands(regions)
+    bands, stacks, gradients = _bands(regions)
     return {
         "count": len(regions),
         "regions": regions,
         "bands": bands,
         "stacks": stacks,
+        "gradients": gradients,
         "baseline_groups": _baseline_groups(regions),
+        "left_edge_groups": _left_edge_groups(regions),
     }
 
 
@@ -262,6 +368,12 @@ def render(data: dict[str, Any]) -> list[str]:
             f"stacked {_pct(stack['top'])}-{_pct(stack['bottom'])}"
         )
 
+    for grad in data.get("gradients") or []:
+        lines.append(
+            f"gradient: vertical, {grad['from']} (top) -> {grad['to']} (bottom), "
+            f"{_pct(grad['top'])}-{_pct(grad['bottom'])}"
+        )
+
     for group in data["baseline_groups"]:
         heights = ", ".join(
             f"{e['name']} h={_pct(e['height_frac'])}" for e in group["elements"]
@@ -269,6 +381,15 @@ def render(data: dict[str, Any]) -> list[str]:
         lines.append(
             f"baseline: {len(group['elements'])} elements aligned at "
             f"y={_pct(group['baseline'])} - left->right: {heights}"
+        )
+
+    for group in data.get("left_edge_groups") or []:
+        widths = ", ".join(
+            f"{e['name']} w={_pct(e['width_frac'])}" for e in group["elements"]
+        )
+        lines.append(
+            f"left-aligned: {len(group['elements'])} elements at "
+            f"x={_pct(group['edge'])} - top->bottom: {widths}"
         )
 
     return lines

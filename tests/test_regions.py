@@ -92,6 +92,63 @@ def test_repeated_rows_collapse_into_stack(rows_image):
     assert stacks[0]["count"] == 4
 
 
+@pytest.fixture
+def hbar_image(tmp_path):
+    """Horizontal bars of different widths sharing a left edge."""
+    img = Image.new("RGB", (400, 300), "white")
+    draw = ImageDraw.Draw(img)
+    bars = [  # (width, colour) top to bottom
+        (280, (31, 119, 180)),
+        (180, (255, 127, 14)),
+        (220, (44, 160, 44)),
+        (100, (214, 39, 40)),
+    ]
+    for i, (width, colour) in enumerate(bars):
+        y = 40 + i * 60
+        draw.rectangle([60, y, 60 + width, y + 40], fill=colour)
+    path = tmp_path / "hbar.png"
+    img.save(path)
+    return str(path)
+
+
+@pytest.fixture
+def gradient_image(tmp_path):
+    """A smooth vertical gradient from warm orange to dark blue."""
+    img = Image.new("RGB", (400, 300))
+    draw = ImageDraw.Draw(img)
+    for y in range(300):
+        t = y / 300
+        draw.line(
+            [(0, y), (400, y)],
+            fill=(int(250 - 180 * t), int(160 - 100 * t), int(90 + 60 * t)),
+        )
+    path = tmp_path / "gradient.png"
+    img.save(path)
+    return str(path)
+
+
+def test_left_edge_group_recovers_horizontal_bar_widths(hbar_image):
+    data = extract(hbar_image, modules=["regions"]).get("regions").data
+    assert data["left_edge_groups"], "expected a left-aligned group for the bars"
+    elements = data["left_edge_groups"][0]["elements"]
+    assert len(elements) == 4
+
+    widths = [e["width_frac"] for e in elements]
+    # Drawn widths are 280, 180, 220, 100 px on a 400 px canvas.
+    assert max(widths) == widths[0]
+    assert min(widths) == widths[3]
+    assert widths[0] == pytest.approx(280 / 400, abs=0.05)
+
+
+def test_gradient_is_one_gradient_not_rows(gradient_image):
+    data = extract(gradient_image, modules=["regions"]).get("regions").data
+    assert data["gradients"], "expected the gradient to be detected"
+    assert data["stacks"] == [], "a gradient must not masquerade as UI rows"
+    grad = data["gradients"][0]
+    assert grad["top"] == pytest.approx(0.0, abs=0.05)
+    assert grad["bottom"] == pytest.approx(1.0, abs=0.05)
+
+
 def test_plain_background_yields_no_relations(tmp_path):
     img = Image.new("RGB", (300, 300), "white")
     path = tmp_path / "plain.png"
@@ -100,6 +157,8 @@ def test_plain_background_yields_no_relations(tmp_path):
     assert data["baseline_groups"] == []
     assert data["bands"] == []
     assert data["stacks"] == []
+    assert data["gradients"] == []
+    assert data["left_edge_groups"] == []
 
 
 def test_render_mentions_baseline(bar_chart_image):
