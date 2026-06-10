@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/bar_chart.png
 size: 640x420
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 640x420
@@ -12,7 +12,7 @@ modules: 8/8 available
 
 [OCR]
   text: "Quarterly Revenue (Cr) / 280 / 200 / 160 / 120 / Qi Q2 Q3"
-  confidence: 89.9% (reliable)
+  confidence: 89.3% (reliable)
   position: top-left
   size: medium
 
@@ -23,6 +23,14 @@ modules: 8/8 available
     ML:white  MC:beige  MR:salmon
     BL:light blue  BC:beige  BR:beige
   grayscale: false
+
+[Regions]
+  - white #FEFEFE, 66%, background, smooth
+  - red #D62728, 9%, right, tall, smooth
+  - orange #FE7F0E, 7%, center, tall, smooth
+  - green #2C9F2C, 5%, bottom-center, tall, smooth
+  - blue #1F76B2, 4%, bottom-left, tall, smooth
+  baseline: 4 elements aligned at y=86% - left->right: blue h=29%, orange h=48%, green h=39%, red h=66%
 
 [Structure]
   edge_density: low

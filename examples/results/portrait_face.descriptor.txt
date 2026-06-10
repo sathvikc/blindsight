@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/portrait_face.jpg
 size: 1024x1024
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 1024x1024
@@ -20,6 +20,18 @@ modules: 8/8 available
     ML:dark gray  MC:gray  MR:brown
     BL:dark gray  BC:gray  BR:dark gray
   grayscale: false
+
+[Regions]
+  - dark brown #402B1D, 6%, right, smooth
+  - gray #AE8473, 6%, bottom-center, smooth
+  - beige #D2AD9B, 5%, top-center, smooth
+  - dark brown #442D1F, 5%, top-right, tall, smooth
+  - dark brown #36271D, 5%, bottom-left, smooth
+  - dark brown #3D2B1F, 3%, left, tall, smooth
+  - black #141211, 3%, bottom-right, smooth
+  - salmon #C49583, 2%, center, smooth
+  - gray #586270, 2%, bottom-right, tall, smooth
+  - gray #A88875, 1%, bottom-center, smooth
 
 [Structure]
   edge_density: medium

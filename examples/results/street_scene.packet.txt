@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/street_scene.jpg
 size: 800x533
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 800x533
@@ -25,6 +25,18 @@ modules: 8/8 available
     ML:sky blue  MC:sky blue  MR:sky blue
     BL:sky blue  BC:gray  BR:sky blue
   grayscale: false
+
+[Regions]
+  - sky blue #739DC3, 9%, bottom-center, wide, smooth
+  - light blue #C7E0F6, 8%, bottom-center, wide, smooth
+  - navy blue #0B304C, 6%, bottom-center, wide, textured
+  - sky blue #55ACDE, 5%, right, smooth
+  - sky blue #55ACDE, 3%, bottom-left, smooth
+  - sky blue #5EAEDD, 2%, top-right, wide, smooth
+  - sky blue #7EC1EB, 2%, right, tall, smooth
+  - sky blue #61AEDD, 1%, top-left, wide, smooth
+  - sky blue #6CA0CB, 1%, bottom-left, tall, smooth
+  - blue #0C7BB6, 1%, bottom-right, smooth
 
 [Structure]
   edge_density: low

@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/qr_code.png
 size: 360x360
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 360x360
@@ -20,6 +20,14 @@ modules: 8/8 available
     ML:gray  MC:gray  MR:light gray
     BL:light gray  BC:light gray  BR:light gray
   grayscale: true
+
+[Regions]
+  - white #FFFFFF, 38%, background, smooth
+  - white #FFFFFF, 1%, right, smooth
+  - black #000000, 1%, center, smooth
+  - black #000000, 1%, top-left, smooth
+  - black #000000, 1%, top-right, smooth
+  - black #000000, 1%, bottom-left, smooth
 
 [Structure]
   edge_density: medium

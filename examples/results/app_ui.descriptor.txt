@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/app_ui.png
 size: 390x700
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 390x700
@@ -12,7 +12,7 @@ modules: 8/8 available
 
 [OCR]
   text: "Account @ / Notifications @ / Privacy / Appearance @ / Storage @ / Save"
-  confidence: 76.7% (reliable)
+  confidence: 82.9% (reliable)
   position: top-left
   size: medium
 
@@ -24,6 +24,18 @@ modules: 8/8 available
     ML:white  MC:white  MR:white
     BL:light blue  BC:light blue  BR:light blue
   grayscale: false
+
+[Regions]
+  - white #F4F5F7, 29%, bottom-center, smooth
+  - blue #2062E7, 12%, top-center, wide, smooth
+  - white #FFFFFF, 7%, center, wide, smooth
+  - white #FFFFFF, 6%, top-center, wide, smooth
+  - white #FFFFFF, 6%, bottom-center, wide, smooth
+  - white #FFFFFF, 6%, top-center, wide, smooth
+  - blue #1F62E7, 6%, bottom-center, wide, smooth
+  - white #FFFFFF, 6%, center, wide, smooth
+  bands top->bottom: blue (0%-13%)
+  rows: 5 white full-width rows stacked 18%-72%
 
 [Structure]
   edge_density: low

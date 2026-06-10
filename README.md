@@ -48,6 +48,12 @@ modules: 8/8 available
     BL:white      BC:white      BR:light gray
   grayscale: false
 
+[Regions]
+  - white #F0F5FA, 64%, background, smooth
+  - navy blue #1A3C5E, 19%, top-center, wide, smooth
+  - red #DC1E1E, 6%, right, tall, smooth
+  bands top->bottom: navy blue (0%-22%)
+
 [Structure]
   edge_density: low
   lines: horizontal=true, vertical=true, diagonal=false
@@ -101,6 +107,7 @@ included [benchmark](#benchmark) exists to measure exactly where that line sits.
 | `stats`     | resolution, orientation, aspect ratio, brightness, contrast       |
 | `ocr`       | text in reading-order lines, confidence, position, size *(optional)* |
 | `colors`    | dominant + accent palette (hex + name), 3×3 colour grid, grayscale |
+| `regions`   | coloured regions with geometry, plus relations: bands, row stacks, shared baselines with per-element heights |
 | `structure` | edge density, dominant line orientations, layout character        |
 | `shapes`    | object count, shape class, size, position                         |
 | `faces`     | face count and rough positions (classical Haar cascades)          |
@@ -228,6 +235,19 @@ loop above.
   reliably.
 - **Adaptive thresholds.** Edge detection derives its thresholds from each
   image's own intensity, so it adapts to dark and bright images alike.
+- **Symbolic geometry, not ASCII art.** The obvious way to give a text model
+  "sight" is to rasterise the image into a character grid — and it fails twice:
+  token count scales with pixel count, and BPE tokenisation destroys the 2D
+  alignment the picture depends on. The `regions` module takes the opposite
+  route: segment the image classically and ship a handful of *measured facts*
+  (region colours, positions, full-width bands, repeated row stacks, elements
+  sharing a baseline with their heights). On a bar chart it emits
+  `baseline: 4 elements aligned at y=86% — left→right: blue h=29%, orange
+  h=48%, green h=39%, red h=66%`, which lets a text model answer *which bar is
+  tallest* — a question type even multimodal models get wrong on precise
+  values — with no chart-specific parser, in a dozen tokens. The module only
+  measures; interpreting "blue band over green band" as *sky over grass* is
+  left to the model, which is exactly what it is good at.
 
 ## What it deliberately won't do
 

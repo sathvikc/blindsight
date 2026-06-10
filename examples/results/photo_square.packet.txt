@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/photo_square.jpg
 size: 640x640
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 640x640
@@ -25,6 +25,18 @@ modules: 8/8 available
     ML:gray  MC:gray  MR:gray
     BL:dark gray  BC:dark gray  BR:dark gray
   grayscale: false
+
+[Regions]
+  - light gray #C5BBB3, 7%, top-right, smooth
+  - gray #A19DA0, 4%, center, wide, smooth
+  - light gray #D4CDC8, 3%, top-left, smooth
+  - light gray #D8CCC4, 3%, top-right, smooth
+  - light gray #D1CFCD, 2%, top-center, wide, smooth
+  - black #0D0A0A, 2%, bottom-center, wide, smooth
+  - light gray #DBD8D7, 2%, top-center, wide, smooth
+  - light gray #E4D6CE, 2%, top-center, smooth
+  - light gray #E1D7D0, 2%, top-left, smooth
+  - black #130606, 2%, bottom-center, smooth
 
 [Structure]
   edge_density: medium
