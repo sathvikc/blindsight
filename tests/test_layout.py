@@ -108,3 +108,16 @@ def test_no_section_without_both_modules():
         {"text": "hello", "x0": 0.1, "y0": 0.1, "x1": 0.3, "y1": 0.15},
     ])
     assert layout.build([ocr]) is None
+
+
+def test_renamed_payload_key_fails_loudly():
+    # The cross-module contract is enforced by direct key access: an
+    # *available* OCR result without its expected payload keys is a
+    # programming error and must raise, not silently drop the section.
+    import pytest
+
+    broken_ocr = ModuleResult(name="ocr", title="OCR", available=True,
+                              data={"boxes_renamed": []})
+    reg = _regions_result([_WHITE_BG, _BLUE_HEADER])
+    with pytest.raises(KeyError):
+        layout.build([broken_ocr, reg])
