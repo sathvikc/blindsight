@@ -107,7 +107,7 @@ included [benchmark](#benchmark) exists to measure exactly where that line sits.
 | `stats`     | resolution, orientation, aspect ratio, brightness, contrast       |
 | `ocr`       | text in reading-order lines, confidence, position, size *(optional)* |
 | `colors`    | dominant + accent palette (hex + name), 3×3 colour grid, grayscale |
-| `regions`   | coloured regions with geometry, plus relations: bands, row stacks, shared baselines with per-element heights |
+| `regions`   | coloured regions with geometry, plus relations: bands, gradients, row stacks, shared baselines/left edges with per-element sizes |
 | `structure` | edge density, dominant line orientations, layout character        |
 | `shapes`    | object count, shape class, size, position                         |
 | `faces`     | face count and rough positions (classical Haar cascades)          |
