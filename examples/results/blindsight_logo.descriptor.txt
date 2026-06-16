@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/blindsight_logo.png
 size: 1024x1024
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 1024x1024
@@ -12,7 +12,7 @@ modules: 8/8 available
 
 [OCR]
   text: "BLINDSIGHT / SEE DATA, NOT / MAGES"
-  confidence: 95.0% (reliable)
+  confidence: 94.8% (reliable)
   position: center
   size: large
 
@@ -24,6 +24,10 @@ modules: 8/8 available
     ML:white  MC:light gray  MR:white
     BL:white  BC:white  BR:white
   grayscale: true
+
+[Regions]
+  - white #FFFEFF, 73%, background, smooth
+  - navy blue #141457, 2%, center, smooth
 
 [Structure]
   edge_density: low

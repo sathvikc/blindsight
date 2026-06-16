@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/landscape.jpg
 size: 800x533
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 800x533
@@ -20,6 +20,18 @@ modules: 8/8 available
     ML:light gray  MC:light gray  MR:light gray
     BL:gray  BC:gray  BR:gray
   grayscale: false
+
+[Regions]
+  - dark gray #3B4756, 6%, bottom-right, wide, textured
+  - gray #8A8A89, 5%, bottom-center, wide, smooth
+  - dark gray #444347, 4%, bottom-left, wide, textured
+  - sky blue #5D9ACE, 3%, top-right, wide, smooth
+  - light gray #C2C5C6, 3%, bottom-center, smooth
+  - white #EBE7E6, 2%, top-center, tall, smooth
+  - white #FBF2E9, 2%, top-center, smooth
+  - sky blue #88B2DD, 2%, top-center, smooth
+  - white #FAF1EC, 1%, top-left, smooth
+  - white #FBF1EA, 1%, top-right, smooth
 
 [Structure]
   edge_density: low

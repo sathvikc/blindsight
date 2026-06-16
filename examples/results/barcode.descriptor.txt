@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/barcode.png
 size: 523x280
-modules: 8/8 available
+modules: 9/9 available
 
 [Stats]
   resolution: 523x280
@@ -23,6 +23,9 @@ modules: 8/8 available
     ML:light gray  MC:gray  MR:light gray
     BL:white  BC:white  BR:white
   grayscale: true
+
+[Regions]
+  - white #FFFFFF, 44%, background, smooth
 
 [Structure]
   edge_density: medium
