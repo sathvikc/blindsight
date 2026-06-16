@@ -150,7 +150,7 @@ def _bands(regions: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
     by_name: dict[str, list[dict[str, Any]]] = {}
     for band in bands:
         by_name.setdefault(band["name"], []).append(band)
-    stacked: list[dict[str, Any]] = []
+    stacked_ids: set[int] = set()
     for name, group in by_name.items():
         # Cluster same-named bands by height *and* actual colour, so true
         # repeated rows stack even when background strips between them share
@@ -181,8 +181,9 @@ def _bands(regions: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
                 "top": cluster[0]["top"],
                 "bottom": cluster[-1]["bottom"],
             })
-            stacked.extend(cluster)
-    bands = [b for b in bands if b not in stacked]
+            stacked_ids.update(id(b) for b in cluster)
+    # Filter by identity, not value: two distinct bands can compare equal.
+    bands = [b for b in bands if id(b) not in stacked_ids]
 
     if len(bands) < 2 and not stacks and not gradients:
         return [], [], gradients
@@ -202,16 +203,24 @@ def _merge_gradients(bands: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
         value = band["hex"].lstrip("#")
         return tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
 
+    ordered = sorted(bands, key=lambda b: b["top"])
+
     runs: list[list[dict[str, Any]]] = []
-    for band in bands:  # bands arrive sorted by top
-        if runs and band["top"] - runs[-1][-1]["bottom"] <= 0.01:
-            runs[-1].append(band)
-        else:
-            runs.append([band])
+    for band in ordered:
+        if runs:
+            gap = band["top"] - runs[-1][-1]["bottom"]
+            # Bounded on both sides: an out-of-order or overlapping band must
+            # not glue two unrelated runs together through a negative gap.
+            if -0.05 <= gap <= 0.01:
+                runs[-1].append(band)
+                continue
+        runs.append([band])
 
     gradients: list[dict[str, Any]] = []
-    merged: list[dict[str, Any]] = []
+    merged_ids: set[int] = set()
     for run in runs:
+        if len(run) < 3:
+            continue
         steps = [
             sum((a - b) ** 2 for a, b in zip(_rgb(run[i]), _rgb(run[i + 1]))) ** 0.5
             for i in range(len(run) - 1)
@@ -223,15 +232,16 @@ def _merge_gradients(bands: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
         # (identical strips are one component, not a gradient) and the steps
         # accumulate end to end. Alternating rows (white/gray/white/...) have
         # large steps that cancel out, so the end-to-end distance stays small.
-        if len(run) >= 3 and min(steps) >= 8.0 and end_to_end >= 0.5 * sum(steps):
+        if min(steps) >= 8.0 and end_to_end >= 0.5 * sum(steps):
             gradients.append({
                 "from": run[0]["name"],
                 "to": run[-1]["name"],
                 "top": run[0]["top"],
                 "bottom": run[-1]["bottom"],
             })
-            merged.extend(run)
-    return [b for b in bands if b not in merged], gradients
+            merged_ids.update(id(b) for b in run)
+    # Filter by identity, not value: two distinct bands can compare equal.
+    return [b for b in bands if id(b) not in merged_ids], gradients
 
 
 def _baseline_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
