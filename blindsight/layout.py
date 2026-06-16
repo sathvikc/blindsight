@@ -81,23 +81,31 @@ def _label_baseline(group: dict[str, Any],
 
 
 def build(results: list[ModuleResult]) -> ModuleResult | None:
-    """Derive the layout section, or ``None`` when there is nothing to link."""
+    """Derive the layout section, or ``None`` when there is nothing to link.
+
+    Contract: an *available* OCR result always carries ``line_boxes`` and
+    ``word_boxes``; an available regions result always carries ``regions``
+    and ``baseline_groups``. Those keys are accessed directly so that a
+    renamed payload key fails loudly (KeyError in the test suite) instead of
+    silently making this section vanish. ``None`` is reserved for the
+    legitimate cases: a module missing or genuinely empty content.
+    """
     by_name = {r.name: r for r in results if r.available}
     ocr = by_name.get("ocr")
     reg = by_name.get("regions")
     if ocr is None or reg is None:
         return None
 
-    line_boxes = ocr.data.get("line_boxes") or []
-    regions = reg.data.get("regions") or []
+    line_boxes = ocr.data["line_boxes"]
+    regions = reg.data["regions"]
     if not line_boxes or not regions:
         return None
 
     links = _link_lines(line_boxes, regions)
 
     labeled_groups: list[dict[str, Any]] = []
-    word_boxes = ocr.data.get("word_boxes") or []
-    for group in reg.data.get("baseline_groups") or []:
+    word_boxes = ocr.data["word_boxes"]
+    for group in reg.data["baseline_groups"]:
         labels = _label_baseline(group, word_boxes)
         if labels is None:
             continue
