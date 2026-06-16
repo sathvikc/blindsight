@@ -8,7 +8,7 @@ overlapping spans.
 
 from __future__ import annotations
 
-from blindsight.modules.regions import _merge_gradients as merge_gradients
+from blindsight.relations import merge_gradients
 
 
 def _band(name, hex_, top, bottom):
