@@ -142,23 +142,35 @@ def _bands(regions: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
 
     bands, gradients = _merge_gradients(bands)
 
+    def _band_rgb(band: dict[str, Any]) -> tuple[int, int, int]:
+        value = band["hex"].lstrip("#")
+        return tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
+
     stacks: list[dict[str, Any]] = []
     by_name: dict[str, list[dict[str, Any]]] = {}
     for band in bands:
         by_name.setdefault(band["name"], []).append(band)
     stacked: list[dict[str, Any]] = []
     for name, group in by_name.items():
-        # Cluster same-named bands by height so true repeated rows stack even
-        # when thin background strips between them share the colour name.
+        # Cluster same-named bands by height *and* actual colour, so true
+        # repeated rows stack even when background strips between them share
+        # the colour name: rows are pixel-identical to each other while the
+        # gaps are a measurably different shade.
         group.sort(key=lambda b: b["bottom"] - b["top"])
         clusters: list[list[dict[str, Any]]] = []
         for band in group:
             height = band["bottom"] - band["top"]
-            if clusters and height <= 1.8 * max(
-                    clusters[-1][0]["bottom"] - clusters[-1][0]["top"], 1e-6):
-                clusters[-1].append(band)
-            else:
-                clusters.append([band])
+            if clusters:
+                anchor = clusters[-1][0]
+                colour_dist = sum(
+                    (a - b) ** 2
+                    for a, b in zip(_band_rgb(band), _band_rgb(anchor))
+                ) ** 0.5
+                if (height <= 1.8 * max(anchor["bottom"] - anchor["top"], 1e-6)
+                        and colour_dist <= 30.0):
+                    clusters[-1].append(band)
+                    continue
+            clusters.append([band])
         for cluster in clusters:
             if len(cluster) < 3:
                 continue
@@ -262,7 +274,8 @@ def _baseline_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "baseline": round(sum(r["bbox"][3] for r in group) / len(group), 3),
             "elements": [
                 {"name": r["name"],
-                 "height_frac": round(r["bbox"][3] - r["bbox"][1], 3)}
+                 "height_frac": round(r["bbox"][3] - r["bbox"][1], 3),
+                 "x0": r["bbox"][0], "x1": r["bbox"][2]}
                 for r in group
             ],
         })
@@ -309,7 +322,8 @@ def _left_edge_groups(regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "edge": round(sum(r["bbox"][0] for r in group) / len(group), 3),
             "elements": [
                 {"name": r["name"],
-                 "width_frac": round(r["bbox"][2] - r["bbox"][0], 3)}
+                 "width_frac": round(r["bbox"][2] - r["bbox"][0], 3),
+                 "y0": r["bbox"][1], "y1": r["bbox"][3]}
                 for r in group
             ],
         })

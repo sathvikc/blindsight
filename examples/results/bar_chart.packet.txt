@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/bar_chart.png
 size: 640x420
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 640x420
@@ -24,9 +24,9 @@ modules: 9/9 available
 [Colors]
   dominant: white #FFFFFF (64%), red #D9302A (9%), orange #DE831F (7%), lime green #52AA54 (5%), gray #43638C (5%)
   grid:
-    TL:white  TC:white  TR:light gray
-    ML:white  MC:beige  MR:salmon
-    BL:light blue  BC:beige  BR:beige
+    TL:white  TC:white  TR:white
+    ML:white  MC:white  MR:white
+    BL:white  BC:white  BR:white
   grayscale: false
 
 [Regions]
@@ -37,14 +37,16 @@ modules: 9/9 available
   - blue #1F76B2, 4%, bottom-left, tall, smooth
   baseline: 4 elements aligned at y=86% - left->right: blue h=29%, orange h=48%, green h=39%, red h=66%
 
+[Layout]
+  baseline labels left->right: blue=Qi, orange=Q2, green=Q3, red=?
+
 [Structure]
   edge_density: low
   lines: horizontal=true, vertical=true, diagonal=false
   layout: structured
 
 [Shapes]
-  count: 2
-  - polygon(7), large, center
+  count: 1
   - triangle, small, top-left
 
 [Faces]

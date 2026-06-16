@@ -27,7 +27,7 @@ modules: 9/9 available
   grid:
     TL:white  TC:white  TR:white
     ML:white  MC:white  MR:white
-    BL:white  BC:light gray  BR:white
+    BL:white  BC:white  BR:white
   grayscale: true
 
 [Regions]

@@ -82,15 +82,19 @@ def _order_lines(words: list[dict[str, Any]]) -> list[str]:
     for w in words:
         grouped.setdefault(w["line"], []).append(w)
 
-    records: list[tuple[int, int, str]] = []
+    records: list[dict[str, Any]] = []
     for ws in grouped.values():
         ws.sort(key=lambda w: w["left"])
-        top = min(w["top"] for w in ws)
-        left = min(w["left"] for w in ws)
-        records.append((top, left, " ".join(w["text"] for w in ws)))
+        records.append({
+            "text": " ".join(w["text"] for w in ws),
+            "left": min(w["left"] for w in ws),
+            "top": min(w["top"] for w in ws),
+            "right": max(w["left"] + w["width"] for w in ws),
+            "bottom": max(w["top"] + w["height"] for w in ws),
+        })
 
-    records.sort(key=lambda r: (r[0], r[1]))
-    return [text for _, _, text in records]
+    records.sort(key=lambda r: (r["top"], r["left"]))
+    return records
 
 
 def _preprocess(pil: Image.Image) -> Image.Image:
@@ -128,23 +132,48 @@ def run(ctx: ImageContext) -> dict[str, Any]:
             words, scale = alt, _UPSCALE
 
     if not words:
-        return {"text": "", "lines": [], "word_count": 0,
-                "confidence": None, "position": None, "size": None}
+        return {"text": "", "lines": [], "line_boxes": [], "word_boxes": [],
+                "word_count": 0, "confidence": None, "position": None,
+                "size": None}
 
-    line_texts = _order_lines(words)
+    line_records = _order_lines(words)
+    line_texts = [r["text"] for r in line_records]
     avg_conf = round(_conf_mass(words) / len(words), 1)
+
+    # Tesseract coordinates are in ctx.pil space (the original image, possibly
+    # refined at _UPSCALE), so normalise against the original dimensions —
+    # ctx.rgb may be a downscaled working copy.
+    img_w, img_h = ctx.pil.size
+
+    def _rel(value: float, extent: int) -> float:
+        return round(value / scale / max(extent, 1), 3)
+
+    line_boxes = [
+        {"text": r["text"],
+         "x0": _rel(r["left"], img_w), "y0": _rel(r["top"], img_h),
+         "x1": _rel(r["right"], img_w), "y1": _rel(r["bottom"], img_h)}
+        for r in line_records
+    ]
+    word_boxes = [
+        {"text": w["text"],
+         "cx": _rel(w["left"] + w["width"] / 2, img_w),
+         "cy": _rel(w["top"] + w["height"] / 2, img_h)}
+        for w in words[:80]
+    ]
 
     # Locate and size the largest text element as a representative anchor,
     # mapping coordinates back to the original image scale.
     biggest = max(words, key=lambda w: w["height"])
     cx = (biggest["left"] + biggest["width"] / 2) / scale
     cy = (biggest["top"] + biggest["height"] / 2) / scale
-    position = region_name(cx, cy, ctx.rgb.shape[1], ctx.rgb.shape[0])
-    size = _size_label(biggest["height"] / scale, ctx.rgb.shape[0])
+    position = region_name(cx, cy, img_w, img_h)
+    size = _size_label(biggest["height"] / scale, img_h)
 
     return {
         "text": " ".join(line_texts),
         "lines": line_texts,
+        "line_boxes": line_boxes,
+        "word_boxes": word_boxes,
         "word_count": len(words),
         "confidence": avg_conf,
         "position": position,

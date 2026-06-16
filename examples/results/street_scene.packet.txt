@@ -23,7 +23,7 @@ modules: 9/9 available
   grid:
     TL:sky blue  TC:sky blue  TR:sky blue
     ML:sky blue  MC:sky blue  MR:sky blue
-    BL:sky blue  BC:gray  BR:sky blue
+    BL:sky blue  BC:light blue  BR:sky blue
   grayscale: false
 
 [Regions]

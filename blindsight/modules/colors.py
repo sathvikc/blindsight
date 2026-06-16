@@ -97,6 +97,21 @@ def _accent_colors(
     return accents[:2]
 
 
+def _cell_dominant(cell: np.ndarray) -> tuple[int, int, int]:
+    """Most common colour in a cell — a colour that actually exists there.
+
+    Averaging a cell that straddles an edge invents a colour present nowhere
+    in the image (red bars on white average to pink). Instead, bucket the
+    pixels coarsely (8 levels per channel), take the fullest bucket, and
+    average only the pixels inside it.
+    """
+    pixels = cell.reshape(-1, 3)
+    buckets = (pixels >> 5).astype(np.int32)
+    keys = buckets[:, 0] * 64 + buckets[:, 1] * 8 + buckets[:, 2]
+    top = int(np.bincount(keys, minlength=512).argmax())
+    return tuple(int(v) for v in pixels[keys == top].mean(axis=0))
+
+
 def _grid(rgb: np.ndarray) -> list[list[dict[str, str]]]:
     h, w = rgb.shape[:2]
     ys = np.linspace(0, h, 4, dtype=int)
@@ -106,8 +121,8 @@ def _grid(rgb: np.ndarray) -> list[list[dict[str, str]]]:
         row: list[dict[str, str]] = []
         for c in range(3):
             cell = rgb[ys[r]:ys[r + 1], xs[c]:xs[c + 1]]
-            mean_rgb = tuple(int(v) for v in cell.reshape(-1, 3).mean(axis=0))
-            row.append({"hex": to_hex(mean_rgb), "name": nearest_name(mean_rgb)})
+            dom_rgb = _cell_dominant(cell)
+            row.append({"hex": to_hex(dom_rgb), "name": nearest_name(dom_rgb)})
         grid.append(row)
     return grid
 

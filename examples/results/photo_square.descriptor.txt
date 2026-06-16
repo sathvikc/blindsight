@@ -17,8 +17,8 @@ modules: 9/9 available
   dominant: black #110C0C (13%), light gray #D8CFCA (13%), light gray #E6DCD6 (12%), light gray #C6BDB8 (12%), dark gray #4C4749 (12%)
   grid:
     TL:light gray  TC:light gray  TR:light gray
-    ML:gray  MC:gray  MR:gray
-    BL:dark gray  BC:dark gray  BR:dark gray
+    ML:gray  MC:gray  MR:dark gray
+    BL:black  BC:black  BR:black
   grayscale: false
 
 [Regions]
@@ -39,8 +39,7 @@ modules: 9/9 available
   layout: busy
 
 [Shapes]
-  count: 3
-  - polygon(6), large, center
+  count: 2
   - triangle, small, bottom-center
   - rectangle, small, center
 
