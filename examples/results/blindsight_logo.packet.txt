@@ -17,7 +17,7 @@ modules: 9/9 available
 
 [OCR]
   text: "BLINDSIGHT / SEE DATA, NOT / MAGES"
-  confidence: 94.8% (reliable)
+  confidence: 95.0% (reliable)
   position: center
   size: large
 

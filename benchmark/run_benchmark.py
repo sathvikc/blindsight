@@ -61,10 +61,15 @@ def _iter_images(images_dir: Path):
             yield path
 
 
-def _format_questions(questions: list[str]) -> str:
+def _format_questions(questions: list[dict | str]) -> str:
     if not questions:
         return "1. Describe what this image most likely contains."
-    return "\n".join(f"{i}. {q}" for i, q in enumerate(questions, 1))
+    
+    formatted = []
+    for i, q in enumerate(questions, 1):
+        q_text = q.get("q", str(q)) if isinstance(q, dict) else str(q)
+        formatted.append(f"{i}. {q_text}")
+    return "\n".join(formatted)
 
 
 def main(argv: list[str] | None = None) -> int:

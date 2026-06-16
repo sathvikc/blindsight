@@ -12,7 +12,7 @@ modules: 10/10 available
 
 [OCR]
   text: "Quarterly Revenue (Cr) / 280 / 200 / 160 / 120 / Qi Q2 Q3"
-  confidence: 89.3% (reliable)
+  confidence: 89.9% (reliable)
   position: top-left
   size: medium
 

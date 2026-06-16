@@ -17,7 +17,7 @@ modules: 10/10 available
 
 [OCR]
   text: "Account @ / Notifications @ / Privacy / Appearance @ / Storage @ / Save"
-  confidence: 82.9% (reliable)
+  confidence: 76.7% (reliable)
   position: top-left
   size: medium
 

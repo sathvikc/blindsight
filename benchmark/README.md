@@ -27,7 +27,7 @@ python benchmark/token_savings.py --images examples/images --results examples/re
 ```
 
 Prints a per-image table and a total. Over the 11 showcase images the descriptor
-path is ~52% cheaper than the cheaper of the two image options — and small codes
+path is 32% cheaper than the cheaper of the two image options — and small codes
 (QR, barcode) are deliberately shown as *negative* savings, because a tiny image
 is cheap to send and the honest comparison says so.
 

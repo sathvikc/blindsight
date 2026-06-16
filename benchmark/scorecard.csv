@@ -9,7 +9,7 @@ barcode.png,1,factual,What type of code is shown?,A 1D barcode (EAN-13),1,1
 barcode.png,2,factual,What is the decoded barcode number?,5901234123457,1,1
 bar_chart.png,1,factual,What is the title of this chart?,Quarterly Revenue (Cr),1,1
 bar_chart.png,2,factual,How many bars does the chart contain?,4 (Q1-Q4),1,1
-bar_chart.png,3,factual,Which quarter had the highest revenue?,Q4 (280),0,1
+bar_chart.png,3,factual,Which quarter had the highest revenue?,Q4 (280),1,1
 app_ui.png,1,factual,What screen of the app is this?,Settings,1,1
 app_ui.png,2,factual,List the menu options shown.,"Account, Notifications, Privacy, Appearance, Storage",1,1
 app_ui.png,3,factual,What colour is the primary action button?,Blue (the Save button),1,1

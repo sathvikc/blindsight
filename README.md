@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="#benchmark"><img alt="Factual accuracy: 89% (descriptor) vs 94% (vision), at half the tokens" src="https://img.shields.io/badge/factual-89%25_vs_94%25_vision_at_half_the_tokens-1a3c5e"></a>
+  <a href="#benchmark"><img alt="Factual accuracy: 93% (descriptor) vs 94% (vision), at 32% fewer tokens" src="https://img.shields.io/badge/factual-93%25_vs_94%25_vision_at_32%25_fewer_tokens-1a3c5e"></a>
 </p>
 
 # Blindsight
@@ -214,11 +214,11 @@ the descriptor text alone (condition A) and once on the real image (condition B)
 
 | Question type | Descriptor (text) | Image (control) |
 |---|---|---|
-| **Factual** (what does it say / what value / how many) | **89%** | 94% |
+| **Factual** (what does it say / what value / how many) | **93%** | 94% |
 | **Perceptual** (mood, scene meaning, expression, landmark) | 11% | 100% |
 
-So on the factual subset the text descriptor recovers ~95% of full-vision
-accuracy while using **~52% fewer input tokens** (per `token_savings.py`), and on
+So on the factual subset the text descriptor recovers ~99% of full-vision
+accuracy while using **32% fewer input tokens** (per `token_savings.py`), and on
 perceptual questions it honestly defers rather than guessing — which is the
 signal to fall back to the real image.
 
