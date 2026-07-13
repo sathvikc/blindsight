@@ -1,17 +1,8 @@
 """Text extraction (OCR) via Tesseract.
 
-Optional module. It degrades gracefully to "unavailable" when either the
-``pytesseract`` Python package or the system ``tesseract`` binary is missing,
-so the rest of the descriptor is unaffected. Word-level confidences are
-aggregated into a single reliability hint, and the dominant text block's
-position and relative size are reported.
+Optional module. It degrades gracefully to "unavailable" when either the ``pytesseract`` Python package or the system ``tesseract`` binary is missing, so the rest of the descriptor is unaffected. Word-level confidences are aggregated into a single reliability hint, and the dominant text block's position and relative size are reported.
 
-Words are reassembled in reading order from Tesseract's block/paragraph/line
-indices rather than raw detection order, and line structure is preserved in the
-output. When a first pass is low-confidence *and already found text*, a second
-pass on an upscaled, thresholded image is tried and kept only if it scores
-higher — a refinement that never runs on text-free images, so honest negatives
-(a photo with no text) are never turned into hallucinated text.
+Words are reassembled in reading order from Tesseract's block/paragraph/line indices rather than raw detection order, and line structure is preserved in the output. When a first pass is low-confidence *and already found text*, a second pass on an upscaled, thresholded image is tried and kept only if it scores higher — a refinement that never runs on text-free images, so honest negatives (a photo with no text) are never turned into hallucinated text.
 """
 
 from __future__ import annotations
@@ -74,9 +65,7 @@ def _extract_words(pil: Image.Image) -> list[dict[str, Any]]:
 def _order_lines(words: list[dict[str, Any]]) -> list[str]:
     """Reassemble words into reading-ordered lines.
 
-    Words are grouped by their (block, paragraph, line) key, ordered left to
-    right within a line, and the lines themselves ordered top to bottom. This is
-    robust to Tesseract emitting detections out of spatial order.
+    Words are grouped by their (block, paragraph, line) key, ordered left to right within a line, and the lines themselves ordered top to bottom. This is robust to Tesseract emitting detections out of spatial order.
     """
     grouped: dict[tuple[int, int, int], list[dict[str, Any]]] = {}
     for w in words:

@@ -1,8 +1,6 @@
 """Tests for the extraction pipeline.
 
-Images are synthesised in-memory so the suite needs no asset files and no
-network. OCR/Tesseract is optional, so tests assert on availability handling
-rather than requiring the binary.
+Images are synthesised in-memory so the suite needs no asset files and no network. OCR/Tesseract is optional, so tests assert on availability handling rather than requiring the binary.
 """
 
 from __future__ import annotations

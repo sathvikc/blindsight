@@ -15,7 +15,8 @@ keywords = ["image", "ocr", "descriptor", "llm", "computer-vision"]
 dependencies = [
     "numpy>=1.24",
     "Pillow>=10.0",
-    "opencv-python>=4.8",
+    # <5: OpenCV 5.0 removes cv2.CascadeClassifier and changes APIs we use.
+    "opencv-python>=4.8,<5",
 ]
 
 [project.urls]
