@@ -6,9 +6,7 @@ Guidance for AI coding agents working in this repository.
 
 The three rules that matter most, restated so they are never missed:
 
-1. **Graceful degradation.** One module failing never aborts extraction; missing optional deps raise `ModuleUnavailable` and are reported `unavailable`.
-2. **Honesty over coverage.** Modules measure, they don't interpret. Prefer emitting nothing to inventing structure — the thresholds in `blindsight/relations.py` each reject a named false positive; keep that bar.
-3. **Relative coordinates.** All geometry is fractions of width/height (0.0–1.0), never raw pixels.
+1. **Graceful degradation.** One module failing never aborts extraction; missing optional deps raise `ModuleUnavailable` and are reported `unavailable`. 2. **Honesty over coverage.** Modules measure, they don't interpret. Prefer emitting nothing to inventing structure — the thresholds in `blindsight/relations.py` each reject a named false positive; keep that bar. 3. **Relative coordinates.** All geometry is fractions of width/height (0.0–1.0), never raw pixels.
 
 Quick commands (details and gotchas in CLAUDE.md — note there is no committed `.venv`):
 

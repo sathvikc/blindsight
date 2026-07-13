@@ -1,17 +1,10 @@
-<p align="center">
-  <img src="examples/images/blindsight_logo.png" alt="Blindsight" width="420">
-</p>
+<p align="center"> <img src="examples/images/blindsight_logo.png" alt="Blindsight" width="420"> </p>
 
-<p align="center">
-  <a href="#benchmark"><img alt="Factual accuracy: 93% (descriptor) vs 94% (vision), at 32% fewer tokens" src="https://img.shields.io/badge/factual-93%25_vs_94%25_vision_at_32%25_fewer_tokens-1a3c5e"></a>
-</p>
+<p align="center"> <a href="#benchmark"><img alt="Factual accuracy: 93% (descriptor) vs 94% (vision), at 32% fewer tokens" src="https://img.shields.io/badge/factual-93%25_vs_94%25_vision_at_32%25_fewer_tokens-1a3c5e"></a> </p>
 
 # Blindsight
 
-Turn any image into a compact, structured **text descriptor** using classical
-image processing — no AI, no ML model downloads, no GPU. The output is designed
-to give a text-first language model enough factual context to answer questions
-about an image without paying to send the full image.
+Turn any image into a compact, structured **text descriptor** using classical image processing — no AI, no ML model downloads, no GPU. The output is designed to give a text-first language model enough factual context to answer questions about an image without paying to send the full image.
 
 > **Blindsight** is a neurological condition in which people with damage to the
 > visual cortex respond accurately to visual stimuli they report not consciously
@@ -83,26 +76,17 @@ modules: 10/10 available
 
 ## Why this project
 
-Sending a full image to a multimodal model is accurate but expensive, and
-text-only models can't accept images at all. Yet a large share of real questions
-about images are **factual, not perceptual**: *what does this screenshot say?*,
-*what URL is in this QR code?*, *what are the brand colours?*, *how many
-people?* Those answers live in symbolic facts that text carries perfectly — no
-pixels required.
+Sending a full image to a multimodal model is accurate but expensive, and text-only models can't accept images at all. Yet a large share of real questions about images are **factual, not perceptual**: *what does this screenshot say?*,
+*what URL is in this QR code?*, *what are the brand colours?*, *how many people?* Those answers live in symbolic facts that text carries perfectly — no pixels required.
 
-Blindsight extracts exactly those facts and hands them to the model as plain
-text. Two payoffs:
+Blindsight extracts exactly those facts and hands them to the model as plain text. Two payoffs:
 
 - **Cost and latency.** A short text descriptor is a fraction of the token cost
-  of a full image. For the factual subset of questions, you skip vision entirely
-  and still get the right answer.
+of a full image. For the factual subset of questions, you skip vision entirely and still get the right answer.
 - **Reach.** Text-only models (and cheap text endpoints) gain a usable, if
-  limited, way to "answer about" images they fundamentally cannot ingest.
+limited, way to "answer about" images they fundamentally cannot ingest.
 
-It is deliberately honest about its limits — it does not pretend to *see* a
-scene. The design intent is a cheap first pass: try the descriptor, and fall
-back to the real image only when the question is genuinely perceptual. The
-included [benchmark](#benchmark) exists to measure exactly where that line sits.
+It is deliberately honest about its limits — it does not pretend to *see* a scene. The design intent is a cheap first pass: try the descriptor, and fall back to the real image only when the question is genuinely perceptual. The included [benchmark](#benchmark) exists to measure exactly where that line sits.
 
 ## What it extracts
 
@@ -119,8 +103,7 @@ included [benchmark](#benchmark) exists to measure exactly where that line sits.
 | `codes`     | QR / barcode values                                               |
 | `exif`      | capture date, device, GPS presence, orientation                   |
 
-\* `layout` is derived from the OCR and regions results after extraction; it
-appears only when both produced content, and cannot be selected directly.
+\* `layout` is derived from the OCR and regions results after extraction; it appears only when both produced content, and cannot be selected directly.
 
 ## Install
 
@@ -141,8 +124,7 @@ brew install tesseract
 sudo apt-get install tesseract-ocr
 ```
 
-OCR is optional — without Tesseract every other module still runs, and the OCR
-section is reported as `unavailable` rather than failing.
+OCR is optional — without Tesseract every other module still runs, and the OCR section is reported as `unavailable` rather than failing.
 
 ## Usage
 
@@ -162,8 +144,7 @@ python blindsight.py photo.jpg --modules ocr,colors,codes
 python blindsight.py photo.jpg --output descriptor.txt
 ```
 
-If installed (`pip install -e .`) the `blindsight` command and `python -m blindsight`
-work the same way.
+If installed (`pip install -e .`) the `blindsight` command and `python -m blindsight` work the same way.
 
 ### Library
 
@@ -181,10 +162,7 @@ if ocr.available:
 
 ## Benchmark
 
-`benchmark/run_benchmark.py` measures the actual point of the project: how well
-a text model answers questions from the descriptor alone versus from the real
-image. It generates descriptors and ready-to-paste evaluation packets for a
-folder of images — no model API key required.
+`benchmark/run_benchmark.py` measures the actual point of the project: how well a text model answers questions from the descriptor alone versus from the real image. It generates descriptors and ready-to-paste evaluation packets for a folder of images — no model API key required.
 
 ```bash
 python benchmark/run_benchmark.py --images ./images --out benchmark/out \
@@ -200,62 +178,35 @@ python benchmark/run_benchmark.py --images ./images --out benchmark/out \
 }
 ```
 
-For each image you get a `*.descriptor.txt` and a `*.packet.txt`. Feed the
-packets to your text model, feed the real images to a multimodal model as the
-control, and score both against your ground truth. `benchmark/make_test_sheet.py`
-turns the ground truth into a gradeable `scorecard.csv`, `benchmark/score.py`
-tallies it, and `benchmark/token_savings.py` reports the cost side with no API
-key. See [`benchmark/README.md`](benchmark/README.md) for the full loop.
+For each image you get a `*.descriptor.txt` and a `*.packet.txt`. Feed the packets to your text model, feed the real images to a multimodal model as the control, and score both against your ground truth. `benchmark/make_test_sheet.py` turns the ground truth into a gradeable `scorecard.csv`, `benchmark/score.py` tallies it, and `benchmark/token_savings.py` reports the cost side with no API key. See [`benchmark/README.md`](benchmark/README.md) for the full loop.
 
 ### Results
 
-Run on the eleven showcase images (36 questions), graded with GPT-5 mini once on
-the descriptor text alone (condition A) and once on the real image (condition B):
+Run on the eleven showcase images (36 questions), graded with GPT-5 mini once on the descriptor text alone (condition A) and once on the real image (condition B):
 
 | Question type | Descriptor (text) | Image (control) |
 |---|---|---|
 | **Factual** (what does it say / what value / how many) | **93%** | 94% |
 | **Perceptual** (mood, scene meaning, expression, landmark) | 11% | 100% |
 
-So on the factual subset the text descriptor recovers ~99% of full-vision
-accuracy while using **32% fewer input tokens** (per `token_savings.py`), and on
-perceptual questions it honestly defers rather than guessing — which is the
-signal to fall back to the real image.
+So on the factual subset the text descriptor recovers ~99% of full-vision accuracy while using **32% fewer input tokens** (per `token_savings.py`), and on perceptual questions it honestly defers rather than guessing — which is the signal to fall back to the real image.
 
-One case is worth singling out: for *"what URL does this QR code contain?"* the
-descriptor **beat** the multimodal model (1.0 vs 0.0), because Blindsight decodes
-the code with OpenCV while a vision model cannot read a QR from pixels alone. The
-classical decoder, handed over as cheap text, is exactly the point.
+One case is worth singling out: for *"what URL does this QR code contain?"* the descriptor **beat** the multimodal model (1.0 vs 0.0), because Blindsight decodes the code with OpenCV while a vision model cannot read a QR from pixels alone. The classical decoder, handed over as cheap text, is exactly the point.
 
-These numbers are a single graded pass on a small, deliberately varied set, not a
-statistical benchmark — reproduce them with your own images and model via the
-loop above.
+These numbers are a single graded pass on a small, deliberately varied set, not a statistical benchmark — reproduce them with your own images and model via the loop above.
 
 ## Design notes
 
 - **Graceful degradation.** A missing dependency or a failing module never
-  aborts extraction; it is reported as `unavailable` with a reason.
+aborts extraction; it is reported as `unavailable` with a reason.
 - **Few system dependencies.** QR decoding uses OpenCV's built-in detector
-  rather than zbar. Dominant colours use Pillow's quantiser rather than an extra
-  library. Tesseract is the only optional system dependency.
+rather than zbar. Dominant colours use Pillow's quantiser rather than an extra library. Tesseract is the only optional system dependency.
 - **Named colours.** Every colour ships with both a hex code and a
-  human-readable name, since the name is what a language model reasons with most
-  reliably.
+human-readable name, since the name is what a language model reasons with most reliably.
 - **Adaptive thresholds.** Edge detection derives its thresholds from each
-  image's own intensity, so it adapts to dark and bright images alike.
+image's own intensity, so it adapts to dark and bright images alike.
 - **Symbolic geometry, not ASCII art.** The obvious way to give a text model
-  "sight" is to rasterise the image into a character grid — and it fails twice:
-  token count scales with pixel count, and BPE tokenisation destroys the 2D
-  alignment the picture depends on. The `regions` module takes the opposite
-  route: segment the image classically and ship a handful of *measured facts*
-  (region colours, positions, full-width bands, repeated row stacks, elements
-  sharing a baseline with their heights). On a bar chart it emits
-  `baseline: 4 elements aligned at y=86% — left→right: blue h=29%, orange
-  h=48%, green h=39%, red h=66%`, which lets a text model answer *which bar is
-  tallest* — a question type even multimodal models get wrong on precise
-  values — with no chart-specific parser, in a dozen tokens. The module only
-  measures; interpreting "blue band over green band" as *sky over grass* is
-  left to the model, which is exactly what it is good at.
+"sight" is to rasterise the image into a character grid — and it fails twice: token count scales with pixel count, and BPE tokenisation destroys the 2D alignment the picture depends on. The `regions` module takes the opposite route: segment the image classically and ship a handful of *measured facts* (region colours, positions, full-width bands, repeated row stacks, elements sharing a baseline with their heights). On a bar chart it emits `baseline: 4 elements aligned at y=86% — left→right: blue h=29%, orange h=48%, green h=39%, red h=66%`, which lets a text model answer *which bar is tallest* — a question type even multimodal models get wrong on precise values — with no chart-specific parser, in a dozen tokens. The module only measures; interpreting "blue band over green band" as *sky over grass* is left to the model, which is exactly what it is good at.
 
 ## What it deliberately won't do
 
@@ -264,8 +215,7 @@ loop above.
 - Reliably read handwriting or heavily stylised fonts.
 - Detect non-frontal faces consistently (Haar cascades miss many profiles).
 
-These are the signals that the descriptor is *insufficient* and the real image
-should be sent instead.
+These are the signals that the descriptor is *insufficient* and the real image should be sent instead.
 
 ## Tests
 
@@ -274,13 +224,7 @@ pip install pytest
 python -m pytest tests/
 ```
 
-Beyond unit tests, `tests/test_random_property.py` is a property-based suite:
-each test draws random instances of an image *family* (bar charts, horizontal
-bars, gradients, UI row layouts, flat/noise images) from seeded RNGs and
-asserts that the regions module recovers counts, orderings and proportions —
-and invents no structure on featureless images. New seeds are new images, so
-the suite tests the families, not a fixed set of pictures. CI runs it on every
-push.
+Beyond unit tests, `tests/test_random_property.py` is a property-based suite: each test draws random instances of an image *family* (bar charts, horizontal bars, gradients, UI row layouts, flat/noise images) from seeded RNGs and asserts that the regions module recovers counts, orderings and proportions — and invents no structure on featureless images. New seeds are new images, so the suite tests the families, not a fixed set of pictures. CI runs it on every push.
 
 ## License
 

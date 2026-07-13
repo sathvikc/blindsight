@@ -1,7 +1,9 @@
 # Core — required
 numpy>=1.24
 Pillow>=10.0
-opencv-python>=4.8
+# <5: OpenCV 5.0 removes cv2.CascadeClassifier (faces) and changes other
+# APIs this project relies on; supporting it is tracked as follow-up work.
+opencv-python>=4.8,<5
 
 # Optional — enables the OCR (text extraction) module.
 # Also requires the system `tesseract` binary:
