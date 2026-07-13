@@ -36,8 +36,8 @@ def gray_image(tmp_path):
 def test_extract_reports_all_modules(shapes_image):
     descriptor = extract(shapes_image)
     names = {r.name for r in descriptor.results}
-    assert names == {"stats", "ocr", "colors", "regions", "structure",
-                     "shapes", "faces", "codes", "exif"}
+    assert names == {"stats", "ocr", "tables", "colors", "regions",
+                     "structure", "shapes", "faces", "codes", "exif"}
 
 
 def test_stats_resolution_matches_source(shapes_image):
