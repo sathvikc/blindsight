@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/photo_square.jpg
 size: 640x640
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 640x640
@@ -12,6 +12,9 @@ modules: 9/9 available
 
 [OCR]
   text: (none detected)
+
+[Tables]
+  none
 
 [Colors]
   dominant: black #110C0C (13%), light gray #D8CFCA (13%), light gray #E6DCD6 (12%), light gray #C6BDB8 (12%), dark gray #4C4749 (12%)

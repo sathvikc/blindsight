@@ -18,7 +18,7 @@ $ blindsight photo.jpg
 === IMAGE DESCRIPTOR ===
 source: photo.jpg
 size: 640x360
-modules: 10/10 available
+modules: 11/11 available
 
 [Stats]
   resolution: 640x360
@@ -32,6 +32,9 @@ modules: 10/10 available
   confidence: 95.8% (reliable)
   position: top-center
   size: large
+
+[Tables]
+  none
 
 [Colors]
   dominant: white #F0F5FA (62%), navy blue #1A3C5E (19%), red #DC1E1E (6%)
@@ -93,7 +96,8 @@ It is deliberately honest about its limits — it does not pretend to *see* a sc
 | Module      | Output                                                            |
 |-------------|-------------------------------------------------------------------|
 | `stats`     | resolution, orientation, aspect ratio, brightness, contrast       |
-| `ocr`       | text in reading-order lines, confidence, position, size *(optional)* |
+| `ocr`       | text in reading-order lines and paragraphs, confidence, position, size; extra recovery passes for small/faint, light-on-dark, and tilted text *(optional)* |
+| `tables`    | ruled tables reconstructed cell by cell — rows of pipe-separated values with row/column associations intact |
 | `colors`    | dominant + accent palette (hex + name), 3×3 colour grid, grayscale |
 | `regions`   | coloured regions with geometry, plus relations: bands, gradients, row stacks, shared baselines/left edges with per-element sizes |
 | `layout`*   | links OCR text to the region it sits in; labels baseline elements with the text below them |
@@ -160,6 +164,44 @@ if ocr.available:
     print(ocr.data["text"])
 ```
 
+### MCP server — give any text-only model sight
+
+Blindsight ships an [MCP](https://modelcontextprotocol.io) server, so models with **no vision input at all** — DeepSeek, cheap text endpoints, local models — can answer factual questions about images through any MCP-capable client. The server implements MCP's stdio transport directly on the standard library, so it adds **zero dependencies**: if Blindsight runs, the server runs.
+
+```bash
+python -m blindsight.mcp_server      # or `blindsight-mcp` if pip-installed
+```
+
+Register it with your client — Claude Code:
+
+```bash
+claude mcp add blindsight -- python -m blindsight.mcp_server
+```
+
+or any client that takes the standard `mcpServers` JSON (Cline, Roo, Continue, LibreChat, custom agents running DeepSeek/Qwen/Llama…):
+
+```json
+{
+  "mcpServers": {
+    "blindsight": {
+      "command": "python",
+      "args": ["-m", "blindsight.mcp_server"]
+    }
+  }
+}
+```
+
+Four tools, designed as a loop rather than a single shot:
+
+| Tool | What it does |
+|---|---|
+| `describe_image` | Full descriptor for a path, URL, data URI, or base64 image — the first call for any image |
+| `read_text` | Document-shaped deep read: OCR in reading order with paragraph breaks, plus ruled tables cell by cell |
+| `inspect_region` | Re-runs extraction on one region *at full original resolution* — the model's way to "zoom in" on low-confidence text or small detail |
+| `capabilities` | What's installed (e.g. whether Tesseract is present) and how to combine the tools |
+
+The zoom loop is the part that pushes past a single descriptor: the overview honestly flags what it couldn't read (low OCR confidence, small regions), and the model calls `inspect_region` on exactly that area — where the crop gets the original image's full resolution instead of the downscaled working copy. Tool descriptions tell the model to say "this needs a vision model" for perceptual questions instead of guessing, keeping the project's honesty contract intact end to end.
+
 ## Benchmark
 
 `benchmark/run_benchmark.py` measures the actual point of the project: how well a text model answers questions from the descriptor alone versus from the real image. It generates descriptors and ready-to-paste evaluation packets for a folder of images — no model API key required.
@@ -205,6 +247,10 @@ rather than zbar. Dominant colours use Pillow's quantiser rather than an extra l
 human-readable name, since the name is what a language model reasons with most reliably.
 - **Adaptive thresholds.** Edge detection derives its thresholds from each
 image's own intensity, so it adapts to dark and bright images alike.
+- **Recovery passes, gated by evidence.** Hard text images get targeted extra
+OCR passes — binarised for small/faint text, inverted for light-on-dark (slides, terminals), deskewed for tilted scans. A pass only wins by scoring strictly higher on total word confidence, and a pass that starts from *zero* first-pass words must clear a stronger bar (several words at solid confidence), so a photo with no text can never gain hallucinated text from the extra attempts.
+- **Ruled tables, reconstructed — aligned columns, left alone.** Tables carry
+the densest facts an image can hold, and flat OCR destroys exactly the row/column associations they depend on. The `tables` module finds ruling lines morphologically, rebuilds the cell grid, and buckets one OCR pass's words into cells — but only when the grid is *drawn*: at least three lines each way, spanning, actually crossing, with text-sized cells. Whitespace-only column alignment is deliberately not inferred; inventing an invisible grid is the kind of unmeasured structure this project refuses to emit.
 - **Symbolic geometry, not ASCII art.** The obvious way to give a text model
 "sight" is to rasterise the image into a character grid — and it fails twice: token count scales with pixel count, and BPE tokenisation destroys the 2D alignment the picture depends on. The `regions` module takes the opposite route: segment the image classically and ship a handful of *measured facts* (region colours, positions, full-width bands, repeated row stacks, elements sharing a baseline with their heights). On a bar chart it emits `baseline: 4 elements aligned at y=86% — left→right: blue h=29%, orange h=48%, green h=39%, red h=66%`, which lets a text model answer *which bar is tallest* — a question type even multimodal models get wrong on precise values — with no chart-specific parser, in a dozen tokens. The module only measures; interpreting "blue band over green band" as *sky over grass* is left to the model, which is exactly what it is good at.
 

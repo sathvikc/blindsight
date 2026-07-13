@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/qr_code.png
 size: 360x360
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 360x360
@@ -17,6 +17,9 @@ modules: 9/9 available
 
 [OCR]
   text: (none detected)
+
+[Tables]
+  none
 
 [Colors]
   dominant: white #FFFFFF (52%), black #000000 (17%), black #020202 (7%), white #FBFBFB (5%), gray #7C7C7C (4%)

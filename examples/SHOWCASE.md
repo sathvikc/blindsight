@@ -1,6 +1,6 @@
 # Showcase
 
-A walkthrough of Blindsight on eleven real and synthetic images. For each one you get the source image, the generated descriptor, and a set of questions a model might be asked. The point of this folder is **honesty**: it shows where a pure text descriptor is genuinely enough, and where it visibly is not.
+A walkthrough of Blindsight on twelve real and synthetic images. For each one you get the source image, the generated descriptor, and a set of questions a model might be asked. The point of this folder is **honesty**: it shows where a pure text descriptor is genuinely enough, and where it visibly is not.
 
 Each row links the descriptor (`results/<name>.descriptor.txt`) and the ready-to-paste model packet (`results/<name>.packet.txt`). The images live in `images/`. Regenerate everything with:
 
@@ -33,6 +33,17 @@ These are the cases the project is built for: symbolic information that survives
 | What date/time was it issued? | ✅ | OCR: "Date: 2026-05-12 14:32" |
 
 OCR confidence 87.4% (reliable). A multimodal model would answer these the same way — at a fraction of the cost here. **This is the core thesis working.**
+
+### `price_table.png` — ruled table
+
+| Question | Verdict | From the descriptor |
+|---|---|---|
+| How many plans are listed? | ✅ | Tables: 5 rows x 3 cols — four plans under a header row |
+| Price of the Team plan? | ✅ | Tables row: `| Team | 2 TB | $29.99 |` |
+| Storage on the Pro plan? | ✅ | Tables row: `| Pro | 200 GB | $9.99 |` |
+| Which plan is unlimited? | ✅ | Tables row: `| Enterprise | Unlimited | $99.00 |` |
+
+The tables module's flagship case. Flat OCR reads the same words, but as one stream — "Pro 200 GB $9.99 Team 2 TB…" — leaving the model to guess which number belongs to which plan. The reconstructed grid keeps every value bound to its row and column, so price/storage questions become verbatim lookups. Only *ruled* tables are reconstructed; whitespace-aligned columns are deliberately left to OCR's line output rather than inventing a grid.
 
 ### `qr_code.png` — machine-readable code
 
@@ -155,7 +166,7 @@ The hardest OCR case in the set: text that's physically present but low-contrast
 
 ## What the showcase demonstrates
 
-1. **Documents, codes, and UI text** — Blindsight answers as well as a vision model, far cheaper. This is the project's home turf, and reading-order line reconstruction keeps multi-line layouts (receipts, menus) intact for the model. 2. **Charts, logos, low-contrast text** — partial. The descriptor surfaces the right raw tokens (brand name, tagline, chart title, value labels), recovers small-area brand colours through the accent line, and now reads a chart's value count — but still loses the *relational* structure (which bar is which value) and the emblem's meaning; the confidence scores flag when to distrust it. 3. **Photographs and scene meaning** — out of scope by design. The descriptor reports honest negatives ("none detected", count 0) instead of guessing, which is exactly the cue to escalate to a real vision model.
+1. **Documents, codes, tables, and UI text** — Blindsight answers as well as a vision model, far cheaper. This is the project's home turf: reading-order line reconstruction keeps multi-line layouts (receipts, menus) intact, and ruled tables come back cell by cell with row/column associations preserved. 2. **Charts, logos, low-contrast text** — partial. The descriptor surfaces the right raw tokens (brand name, tagline, chart title, value labels), recovers small-area brand colours through the accent line, and now reads a chart's value count — but still loses the *relational* structure (which bar is which value) and the emblem's meaning; the confidence scores flag when to distrust it. 3. **Photographs and scene meaning** — out of scope by design. The descriptor reports honest negatives ("none detected", count 0) instead of guessing, which is exactly the cue to escalate to a real vision model.
 
 The value isn't that the descriptor answers everything — it's that it answers the
 *factual* subset cheaply and **tells you, via confidence and honest negatives, when it can't.**

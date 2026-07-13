@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/blindsight_logo.png
 size: 1024x1024
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 1024x1024
@@ -16,10 +16,13 @@ modules: 9/9 available
   contrast: medium
 
 [OCR]
-  text: "BLINDSIGHT / SEE DATA, NOT / MAGES"
-  confidence: 95.0% (reliable)
+  text: "BLINDSIGHT // SEE DATA, NOT // MAGES"
+  confidence: 94.8% (reliable)
   position: center
   size: large
+
+[Tables]
+  none
 
 [Colors]
   dominant: white #FFFFFF (79%), navy blue #121154 (5%)

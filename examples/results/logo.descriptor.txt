@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/logo.png
 size: 1024x1024
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 1024x1024
@@ -11,10 +11,13 @@ modules: 9/9 available
   contrast: medium
 
 [OCR]
-  text: "i / ~( / “nw / lume.js / ILLUMINATE YOUR UI"
-  confidence: 73.1% (uncertain)
+  text: "i / ~(‘< / “nw // lume.js // ILLUMINATE YOUR UI"
+  confidence: 66.6% (uncertain)
   position: top-center
   size: large
+
+[Tables]
+  none
 
 [Colors]
   dominant: white #FFFFFF (87%)
@@ -31,7 +34,7 @@ modules: 9/9 available
 
 [Structure]
   edge_density: low
-  lines: horizontal=false, vertical=true, diagonal=false
+  lines: horizontal=true, vertical=true, diagonal=false
   layout: structured
 
 [Shapes]
