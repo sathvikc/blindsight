@@ -17,8 +17,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install tesseract (optional OCR dependency)
-        run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
+      - name: Install tesseract (optional OCR dependency) and test fonts
+        # fonts-dejavu-core: the OCR/table tests draw their synthetic text
+        # with DejaVu so Tesseract has a real font to read.
+        run: sudo apt-get update && sudo apt-get install -y tesseract-ocr fonts-dejavu-core
 
       - name: Install dependencies
         # opencv-python-headless: CI runners have no display libraries, and
