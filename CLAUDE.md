@@ -145,5 +145,15 @@ Gotcha: a shell hook on this machine may rewrite bare commands to `rtk <cmd>`, w
 - **`benchmark/scorecard.csv` and `benchmark/test_sheet.md`** — committed *graded* benchmark data behind the README's headline numbers. Regenerating blanks the grades.
 - **Thresholds in `relations.py` / `shapes.py` / `colors.py`** — each rejects a named false positive. If you must tune one, the property-based suite must still pass for all seeds, and add a seed/family reproducing the case that motivated the change.
 - **The honest constraints.** The tool deliberately won't interpret scene meaning or mood, identify people/brands/landmarks, read handwriting reliably, or detect non-frontal faces consistently. These are escalation signals telling the caller to fall back to a real vision model. Don't add speculative interpretation to close these "gaps".
-- **`.gitignore`d planning files** (`vision.md`, `marc-algorithm.md`, `.claude/`) — private notes, never commit them.
+- **`.gitignore`d planning files** (`vision.md`, `marc-algorithm.md`) — private notes, never commit them. `.claude/` is ignored *except* `CLAUDE.md`, `settings.json`, and `skills/graphify/`, which are graphify's shared project config and are tracked.
 - **Module output order** in `REGISTRY` — deliberate (cheap factual signals first).
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
