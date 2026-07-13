@@ -1,7 +1,7 @@
 === IMAGE DESCRIPTOR ===
 source: examples/images/app_ui.png
 size: 390x700
-modules: 10/10 available
+modules: 11/11 available
 
 [Stats]
   resolution: 390x700
@@ -11,10 +11,13 @@ modules: 10/10 available
   contrast: medium
 
 [OCR]
-  text: "Account @ / Notifications @ / Privacy / Appearance @ / Storage @ / Save"
-  confidence: 76.7% (reliable)
+  text: "Account @ // Notifications @ / Privacy / Appearance @ // Storage @ // Save"
+  confidence: 82.9% (reliable)
   position: top-left
   size: medium
+
+[Tables]
+  none
 
 [Colors]
   dominant: white #F5F6F8 (38%), white #FFFFFF (31%), blue #2062E8 (19%)

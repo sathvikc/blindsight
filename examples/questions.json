@@ -13,6 +13,12 @@
     "What type of code is shown?",
     "What is the decoded barcode number?"
   ],
+  "price_table.png": [
+    "How many plans are listed in the table?",
+    "What is the price of the Team plan?",
+    "How much storage does the Pro plan include?",
+    "Which plan offers unlimited storage?"
+  ],
   "bar_chart.png": [
     "What is the title of this chart?",
     "How many bars does the chart contain?",

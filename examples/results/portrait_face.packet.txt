@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/portrait_face.jpg
 size: 1024x1024
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 1024x1024
@@ -17,6 +17,9 @@ modules: 9/9 available
 
 [OCR]
   text: (none detected)
+
+[Tables]
+  none
 
 [Colors]
   dominant: dark brown #402D20 (20%), gray #AE8776 (14%), gray #946E5F (12%), dark brown #362B24 (12%), salmon #CBA290 (12%)

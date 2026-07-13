@@ -1,0 +1,70 @@
+=== IMAGE DESCRIPTOR ===
+source: examples/images/price_table.png
+size: 560x400
+modules: 11/11 available
+
+[Stats]
+  resolution: 560x400
+  orientation: landscape
+  aspect_ratio: 7:5
+  brightness: bright
+  contrast: medium
+
+[OCR]
+  text: "Plan Comparison // Plan Storage Price / Free 5 GB $0 // Pro 200 GB $9.99 / Team 27TB $29.99 / Enterprise Unlimited $99.00"
+  confidence: 92.8% (reliable)
+  position: top-center
+  size: medium
+
+[Tables]
+  count: 1
+  table 1: 5 rows x 3 cols (center, ruled)
+    | Plan | Storage | Price |
+    | Free | 5 GB | $0 |
+    | Pro | 200 GB | $9.99 |
+    | Team | 27TB | $29.99 |
+    | Enterprise | Unlimited | $99.00 |
+
+[Colors]
+  dominant: white #FFFFFF (70%), white #FCFCFC (9%), light gray #ABABAB (4%)
+  grid:
+    TL:white  TC:white  TR:white
+    ML:white  MC:white  MR:white
+    BL:white  BC:white  BR:white
+  grayscale: true
+
+[Regions]
+  - white #FFFFFF, 33%, background, smooth
+  - white #FFFFFF, 2%, left, wide, smooth
+  - white #FFFFFF, 2%, bottom-center, wide, smooth
+  - white #FFFFFF, 2%, right, wide, smooth
+  - white #FFFFFF, 2%, bottom-left, wide, smooth
+  - white #FFFFFF, 2%, top-left, wide, smooth
+  - white #FFFFFF, 2%, top-right, wide, smooth
+  - white #FFFFFF, 2%, left, wide, smooth
+  - white #FFFFFF, 2%, right, wide, smooth
+  - white #FFFFFF, 2%, bottom-right, wide, smooth
+  left-aligned: 4 elements at x=9% - top->bottom: white w=26%, white w=26%, white w=26%, white w=26%
+
+[Layout]
+  "Team 27TB $29.99" inside white region (bottom-center)
+
+[Structure]
+  edge_density: low
+  lines: horizontal=true, vertical=true, diagonal=false
+  layout: structured
+
+[Shapes]
+  count: 1
+  - rectangle, large, center
+
+[Faces]
+  count: 0
+
+[Codes]
+  none
+
+[EXIF]
+  none
+
+=========================

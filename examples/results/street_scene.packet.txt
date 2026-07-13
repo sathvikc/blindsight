@@ -6,7 +6,7 @@ contain enough information, say "insufficient information".
 === IMAGE DESCRIPTOR ===
 source: examples/images/street_scene.jpg
 size: 800x533
-modules: 9/9 available
+modules: 10/10 available
 
 [Stats]
   resolution: 800x533
@@ -17,6 +17,9 @@ modules: 9/9 available
 
 [OCR]
   text: (none detected)
+
+[Tables]
+  none
 
 [Colors]
   dominant: sky blue #7FC0E9 (18%), sky blue #5FB0E0 (15%), sky blue #78BCE8 (13%), sky blue #6FB5E2 (12%), sky blue #65A2CD (11%)

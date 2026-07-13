@@ -12,19 +12,25 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import qrcode
 from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(__file__).resolve().parent / "images"
 OUT.mkdir(parents=True, exist_ok=True)
 
-MONO = "/System/Library/Fonts/Menlo.ttc"
-SANS = "/System/Library/Fonts/Supplemental/Arial.ttf"
-SANS_B = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+# First existing candidate wins, so the script runs on macOS and Linux alike.
+MONO = ("/System/Library/Fonts/Menlo.ttc",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf")
+SANS = ("/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+SANS_B = ("/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+          "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
 
 
-def font(path: str, size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(path, size)
+def font(candidates: tuple[str, ...], size: int) -> ImageFont.FreeTypeFont:
+    for path in candidates:
+        if Path(path).exists():
+            return ImageFont.truetype(path, size)
+    raise FileNotFoundError(f"no usable font among {candidates}")
 
 
 def receipt() -> None:
@@ -59,6 +65,8 @@ def receipt() -> None:
 
 
 def qr_code() -> None:
+    import qrcode  # generation-time-only dependency, so imported lazily
+
     img = qrcode.make("https://sathvikc.github.io/lume-js/").convert("RGB")
     img = img.resize((360, 360), Image.NEAREST)
     img.save(OUT / "qr_code.png")
@@ -122,6 +130,36 @@ def app_ui() -> None:
     img.save(OUT / "app_ui.png")
 
 
+def price_table() -> None:
+    """A ruled table — the tables module's flagship case."""
+    img = Image.new("RGB", (560, 400), "white")
+    d = ImageDraw.Draw(img)
+    d.text((150, 20), "Plan Comparison", fill=(20, 20, 20), font=font(SANS_B, 28))
+
+    rows = [
+        ["Plan", "Storage", "Price"],
+        ["Free", "5 GB", "$0"],
+        ["Pro", "200 GB", "$9.99"],
+        ["Team", "2 TB", "$29.99"],
+        ["Enterprise", "Unlimited", "$99.00"],
+    ]
+    x0, y0, cell_w, cell_h = 40, 80, 160, 56
+    cols, nrows = len(rows[0]), len(rows)
+    for r in range(nrows + 1):
+        y = y0 + r * cell_h
+        d.line([(x0, y), (x0 + cols * cell_w, y)], fill=(60, 60, 60), width=2)
+    for c in range(cols + 1):
+        x = x0 + c * cell_w
+        d.line([(x, y0), (x, y0 + nrows * cell_h)], fill=(60, 60, 60), width=2)
+    header = font(SANS_B, 20)
+    body = font(SANS, 20)
+    for r, row in enumerate(rows):
+        for c, text in enumerate(row):
+            d.text((x0 + c * cell_w + 14, y0 + r * cell_h + 16), text,
+                   fill=(20, 20, 20), font=header if r == 0 else body)
+    img.save(OUT / "price_table.png")
+
+
 def logo() -> None:
     img = Image.new("RGB", (480, 360), "white")
     d = ImageDraw.Draw(img)
@@ -142,6 +180,7 @@ def main() -> None:
     barcode_img()
     bar_chart()
     app_ui()
+    price_table()
     logo()
     print(f"generated synthetic samples in {OUT}/")
     # Note: blindsight_logo.png is the project's real brand mark (a committed
