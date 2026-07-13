@@ -29,6 +29,7 @@ dev = ["pytest>=7.4"]
 
 [project.scripts]
 blindsight = "blindsight.cli:main"
+blindsight-mcp = "blindsight.mcp_server:main"
 
 [tool.setuptools.packages.find]
 include = ["blindsight*"]
