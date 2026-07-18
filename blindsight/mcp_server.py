@@ -26,7 +26,7 @@ from typing import Any
 
 from . import __version__
 from .extractor import extract
-from .modules import REGISTRY
+from .modules import load_registry
 
 # Protocol revisions this server implements. The tools-only subset is
 # identical across them, so we accept any of these and echo it back;
@@ -35,7 +35,14 @@ _PROTOCOL_VERSIONS = ("2025-06-18", "2025-03-26", "2024-11-05")
 
 _MAX_DOWNLOAD = 30 * 1024 * 1024  # refuse image downloads larger than this
 _FETCH_TIMEOUT = 30               # seconds
-_MODULE_NAMES = [m.NAME for m in REGISTRY]
+
+# Plugins run arbitrary third-party code, so — like the CLI's
+# --enable-plugins — they are opt-in, here via an env var set before the
+# server starts (there's no argv the MCP client lets you pass through).
+_ENABLE_PLUGINS = os.environ.get("BLINDSIGHT_ENABLE_PLUGINS", "").strip().lower() in (
+    "1", "true", "yes", "on")
+_REGISTRY = load_registry(enable_plugins=_ENABLE_PLUGINS)
+_MODULE_NAMES = [m.NAME for m in _REGISTRY]
 
 _SOURCE_DESC = (
     "The image: a local file path, an http(s) URL, a data: URI, or a bare "
@@ -252,7 +259,7 @@ def _extract_from_source(source: str, modules: list[str] | None = None,
             label = (f"{label} [region x={x0:.2f}-{x1:.2f}, "
                      f"y={y0:.2f}-{y1:.2f}]")
 
-        descriptor = extract(path, modules=modules)
+        descriptor = extract(path, modules=modules, enable_plugins=_ENABLE_PLUGINS)
         descriptor.source = label
         return descriptor
     finally:
@@ -343,6 +350,9 @@ def _tool_inspect_region(args: dict[str, Any]) -> str:
     return descriptor.to_text()
 
 
+_BUILTIN_NAMES = frozenset(m.NAME for m in load_registry(enable_plugins=False))
+
+
 def _probe_module(module) -> tuple[bool, str]:
     if module.NAME == "ocr":
         try:
@@ -351,6 +361,10 @@ def _probe_module(module) -> tuple[bool, str]:
             return True, f"tesseract {version}"
         except Exception as exc:
             return False, f"needs the tesseract binary ({exc})"
+    if module.NAME not in _BUILTIN_NAMES:
+        # Third-party plugin: no built-in probe knows its dependencies, so
+        # report it loaded rather than guessing at an unrelated one (cv2).
+        return True, "plugin, loaded"
     try:
         import cv2  # noqa: F401 - probing the import is the point
     except ImportError:
@@ -360,8 +374,9 @@ def _probe_module(module) -> tuple[bool, str]:
 
 def _tool_capabilities(_args: dict[str, Any]) -> str:
     lines = [f"blindsight {__version__} — classical image analysis, no vision model",
+             "", f"plugins: {'enabled' if _ENABLE_PLUGINS else 'disabled (set BLINDSIGHT_ENABLE_PLUGINS=1 to load third-party modules)'}",
              "", "modules:"]
-    for module in REGISTRY:
+    for module in _REGISTRY:
         ok, note = _probe_module(module)
         status = "available" if ok else "UNAVAILABLE"
         lines.append(f"  {module.NAME:<10} {status:<12} {note}")
