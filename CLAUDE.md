@@ -10,7 +10,7 @@ Definitive guidance for AI coding agents working in this repository. `AGENTS.md`
 
 ## Architecture in one paragraph
 
-`extract(path)` (in `extractor.py`) decodes the image **once** into an `ImageContext` (PIL / RGB ndarray / grayscale, `context.py`), then runs every module in `modules/__init__.py`'s `REGISTRY` in order. Each module returns a serializable dict or raises; failures become `available=False` results and never abort extraction. After the modules, `layout.py` derives a cross-module section linking OCR text to regions (pure geometry over the two results — not a module itself). Everything is collected into an `ImageDescriptor` (`descriptor.py`) which renders via `formatter.py` to a `[Section]` text block or a JSON dict. `cli.py` wraps this in argparse.
+`extract(path)` (in `extractor.py`) decodes the image **once** into an `ImageContext` (PIL / RGB ndarray / grayscale, `context.py`), then runs every module in `modules/__init__.py`'s `REGISTRY` in order (plus any opted-in third-party plugin modules — see `plugins.py` and the Plugins section below). Each module returns a serializable dict or raises; failures become `available=False` results and never abort extraction. After the modules, `layout.py` derives a cross-module section linking OCR text to regions (pure geometry over the two results — not a module itself). Everything is collected into an `ImageDescriptor` (`descriptor.py`) which renders via `formatter.py` to a `[Section]` text block or a JSON dict. `cli.py` wraps this in argparse.
 
 ## Layout
 
@@ -28,10 +28,12 @@ blindsight/
   layout.py              # cross-module pass: links OCR text to regions
   relations.py           # region relations: bands, stacks, gradients, alignments
                          #   (all anti-hallucination thresholds live here, named)
+  plugins.py             # third-party module discovery (entry-point group
+                         #   "blindsight.modules"); opt-in, see Plugins below
   modules/               # one file per extractor (see contract below)
-    __init__.py          # REGISTRY list = output order
-    stats, ocr, colors, regions, structure, shapes, faces, codes, exif
-tests/                   # pytest unit + property-based suites (90 tests, ~15s)
+    __init__.py          # REGISTRY list = output order; load_registry() adds plugins
+    stats, ocr, tables, colors, regions, structure, shapes, faces, codes, exif
+tests/                   # pytest unit + property-based suites (90+ tests, ~15s)
 benchmark/               # scoring + token-cost harness (no API key needed)
 examples/                # sample images + committed descriptor/packet outputs
   regenerate.py          # refresh examples/results/ after output changes
@@ -59,7 +61,9 @@ def render(data: dict) -> list[str] # data -> body lines (no [Header]; no leadin
 
 Register the module in `modules/__init__.py`'s `REGISTRY` — **list position is the
 output order**. The order is intentional: cheap factual signals first (stats, ocr,
-colors), then structural, then metadata.
+colors), then structural, then metadata. Only built-in modules go in `REGISTRY`
+directly; a module living outside this repo is a **plugin** (see below), not a
+`REGISTRY` addition.
 
 Core invariants — do not break these:
 
@@ -71,6 +75,31 @@ Core invariants — do not break these:
 - **Named colours.** Surface colours through `colornames` so output carries both hex
   and a human-readable name (the name is what the LLM reasons with).
 - **Layout is not a module.** It is derived in `extractor.py` *after* all modules run, from the `ocr` and `regions` payloads, and inserted after the regions result. It appears only when both produced content, and cannot be selected via `--modules`. Its payload-key access is deliberately un-defensive: a renamed OCR/regions key must raise KeyError in tests, not silently drop the section (see `tests/test_layout.py:test_renamed_payload_key_fails_loudly`).
+
+## Plugins
+
+Third-party packages can add modules from outside this repo via a Python entry
+point, so the built-in `REGISTRY` never needs to grow for someone else's use
+case. Mechanics live in `blindsight/plugins.py`; `modules.load_registry(enable_plugins=True)`
+is the only thing that touches it, called from `extractor.extract(..., enable_plugins=True)`,
+the CLI's `--enable-plugins`, and the MCP server's `BLINDSIGHT_ENABLE_PLUGINS=1`.
+
+- A plugin package registers under the `blindsight.modules` entry-point group
+  and its target must satisfy the exact same module contract above (`NAME`,
+  `TITLE`, `run`, `render`) — `plugins.discover()` validates this and skips
+  (with a `PluginLoadWarning`, never an exception) anything that fails to
+  import, doesn't match the contract, or reuses a `NAME` already taken by a
+  built-in module or another plugin.
+- Plugins are **opt-in everywhere**, never auto-loaded — an installed plugin
+  package runs its code the moment discovery happens, so a caller who didn't
+  ask for plugins must never get one silently.
+- Plugins always append **after** the built-in `REGISTRY`; they cannot
+  reorder or displace a built-in module's position, keeping the "cheap
+  signals first" output order intact regardless of what's installed.
+- When touching this system, keep the graceful-degradation invariant: one
+  broken plugin must never prevent the built-ins, or other plugins, from
+  running. `tests/test_plugins.py` covers discovery, validation, and the
+  opt-in default with faked entry points (no real plugin package needed).
 
 ## Commands
 
@@ -87,6 +116,7 @@ python blindsight.py image.jpg
 python blindsight.py image.jpg --format json
 python blindsight.py image.jpg --modules ocr,colors,codes
 python blindsight.py image.jpg --output descriptor.txt
+python blindsight.py image.jpg --enable-plugins   # + third-party modules, if any installed
 python -m blindsight image.jpg          # after pip install -e .
 blindsight image.jpg                    # console script, after pip install -e .
 

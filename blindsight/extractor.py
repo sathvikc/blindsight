@@ -12,25 +12,31 @@ from typing import Iterable
 from . import layout
 from .context import ModuleUnavailable, load_context
 from .descriptor import ImageDescriptor, ModuleResult
-from .modules import REGISTRY
+from .modules import load_registry
 
 
-def extract(path: str, modules: Iterable[str] | None = None) -> ImageDescriptor:
+def extract(path: str, modules: Iterable[str] | None = None,
+            enable_plugins: bool = False) -> ImageDescriptor:
     """Extract a structured descriptor from the image at ``path``.
 
     Args:
         path: Filesystem path to the image.
         modules: Optional subset of module names to run (e.g. ``["ocr",
             "colors"]``). ``None`` runs all registered modules.
+        enable_plugins: Also discover and run third-party modules registered
+            via the ``blindsight.modules`` entry-point group (see
+            :mod:`blindsight.plugins`). Off by default: a plugin runs
+            arbitrary third-party code, so it must be opted into explicitly.
 
     Returns:
         An :class:`ImageDescriptor` with one result per requested module.
     """
     ctx = load_context(path)
+    registry = load_registry(enable_plugins=enable_plugins)
     selected = set(modules) if modules is not None else None
 
     results: list[ModuleResult] = []
-    for module in REGISTRY:
+    for module in registry:
         if selected is not None and module.NAME not in selected:
             continue
         results.append(_run_module(module, ctx))

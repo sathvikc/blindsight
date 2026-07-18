@@ -109,17 +109,75 @@ It is deliberately honest about its limits — it does not pretend to *see* a sc
 
 \* `layout` is derived from the OCR and regions results after extraction; it appears only when both produced content, and cannot be selected directly.
 
+This set is extensible: third-party packages can add their own modules to the list — see [Plugins](#plugins).
+
 ## Install
 
 Requires **Python 3.10–3.13** (3.14 currently lacks prebuilt OpenCV wheels).
 
+There are three install paths — pick based on what you need:
+
+### Run it from anywhere (recommended for just using the CLI)
+
+Want a `blindsight` command that works in any directory, in any new shell,
+without activating a virtualenv or remembering where the repo lives?
+Use [`pipx`](https://pipx.pypa.io) — it builds an isolated environment for
+the package once and puts just the commands on your `PATH`, the same idea
+as `npm install -g`:
+
+```bash
+pipx install .                # from inside this repo, one-time
+pipx install ".[ocr]"         # + OCR/tables support (pytesseract)
+```
+
+```bash
+cd ~/anywhere/at/all
+blindsight photo.jpg          # just works — no cwd, no venv activation
+blindsight-mcp                # ditto for the MCP server
+```
+
+This is also the cleanest way to register the [MCP server](#mcp-server--give-any-text-only-model-sight)
+with a client, since the client launches the command from *its* working
+directory, never yours — see that section for why a bare `python -m
+blindsight.mcp_server` trips people up otherwise.
+
+### Quick run, no install
+
+Just want `python blindsight.py photo.jpg` to work from inside a checkout?
+
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt        # includes pytesseract (OCR's Python side)
 ```
 
-The OCR module additionally needs the system Tesseract binary:
+This does **not** register the `blindsight` / `blindsight-mcp` commands, and
+`import blindsight` only resolves from the repo root (it's not on `sys.path`
+anywhere else). For those, use `pipx` (above) or the editable install (below)
+instead.
+
+### Editable install (working on Blindsight itself)
+
+For hacking on the source — changes take effect immediately, no reinstall:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e .              # base: stats, colors, regions, structure, shapes, codes, exif
+pip install -e ".[ocr]"       # + adds pytesseract, for the ocr/tables modules
+pip install -e ".[dev]"       # + pytest, to run the test suite
+```
+
+Extras compose, e.g. `pip install -e ".[ocr,dev]"`. This also gives you the
+`blindsight` / `blindsight-mcp` commands and `import blindsight` from any
+directory, but only while `.venv` is activated — for a command that works in
+a fresh shell with no activation step, use `pipx` above instead.
+
+### OCR's system dependency
+
+Any install path above gives you the `pytesseract` *Python* package (if you
+used the `[ocr]` extra, or `requirements.txt`), but OCR also needs the
+system **Tesseract** binary — a separate install:
 
 ```bash
 # macOS
@@ -128,7 +186,10 @@ brew install tesseract
 sudo apt-get install tesseract-ocr
 ```
 
-OCR is optional — without Tesseract every other module still runs, and the OCR section is reported as `unavailable` rather than failing.
+OCR (and the `tables` module, which depends on it) is optional end to end —
+without the Python package, the system binary, or both, every other module
+still runs and OCR/Tables report `unavailable` with a reason instead of
+failing.
 
 ## Usage
 
@@ -148,7 +209,7 @@ python blindsight.py photo.jpg --modules ocr,colors,codes
 python blindsight.py photo.jpg --output descriptor.txt
 ```
 
-If installed (`pip install -e .`) the `blindsight` command and `python -m blindsight` work the same way.
+If installed (`pipx install .` or `pip install -e .`) the `blindsight` command and `python -m blindsight` work the same way — the `pipx` install works from any directory with no venv activation needed.
 
 ### Library
 
@@ -168,14 +229,13 @@ if ocr.available:
 
 Blindsight ships an [MCP](https://modelcontextprotocol.io) server, so models with **no vision input at all** — DeepSeek, cheap text endpoints, local models — can answer factual questions about images through any MCP-capable client. The server implements MCP's stdio transport directly on the standard library, so it adds **zero dependencies**: if Blindsight runs, the server runs.
 
-```bash
-python -m blindsight.mcp_server      # or `blindsight-mcp` if pip-installed
-```
+**Install the package first.** MCP clients launch the server command directly from their *own* working directory, not this repo, so a bare `python -m blindsight.mcp_server` only resolves if `blindsight` is actually installed somewhere that interpreter can import from — not just present in a checkout you happen to be `cd`'d into.
 
-Register it with your client — Claude Code:
+The simplest fix is the `pipx` install from [Install](#install) above — it puts `blindsight-mcp` on `PATH` with no venv for the client to worry about. For Claude Code:
 
 ```bash
-claude mcp add blindsight -- python -m blindsight.mcp_server
+pipx install .                # or pipx install ".[ocr]"
+claude mcp add blindsight -- blindsight-mcp
 ```
 
 or any client that takes the standard `mcpServers` JSON (Cline, Roo, Continue, LibreChat, custom agents running DeepSeek/Qwen/Llama…):
@@ -184,12 +244,30 @@ or any client that takes the standard `mcpServers` JSON (Cline, Roo, Continue, L
 {
   "mcpServers": {
     "blindsight": {
-      "command": "python",
+      "command": "blindsight-mcp"
+    }
+  }
+}
+```
+
+If you used the editable `.venv` install instead, point the client at the **venv's interpreter by absolute path** — the client does not activate your virtualenv for you, so a bare `python` on `PATH` is a common way this silently breaks:
+
+```bash
+claude mcp add blindsight -- /absolute/path/to/blindsight/.venv/bin/python -m blindsight.mcp_server
+```
+
+```json
+{
+  "mcpServers": {
+    "blindsight": {
+      "command": "/absolute/path/to/blindsight/.venv/bin/python",
       "args": ["-m", "blindsight.mcp_server"]
     }
   }
 }
 ```
+
+Either way, to also load [third-party plugin modules](#plugins) in the server, set `BLINDSIGHT_ENABLE_PLUGINS=1` in the client's `env` block for this server.
 
 Four tools, designed as a loop rather than a single shot:
 
@@ -201,6 +279,50 @@ Four tools, designed as a loop rather than a single shot:
 | `capabilities` | What's installed (e.g. whether Tesseract is present) and how to combine the tools |
 
 The zoom loop is the part that pushes past a single descriptor: the overview honestly flags what it couldn't read (low OCR confidence, small regions), and the model calls `inspect_region` on exactly that area — where the crop gets the original image's full resolution instead of the downscaled working copy. Tool descriptions tell the model to say "this needs a vision model" for perceptual questions instead of guessing, keeping the project's honesty contract intact end to end.
+
+## Plugins
+
+Third-party packages can register additional extraction modules without
+forking Blindsight, through a standard Python entry point — install a
+plugin package alongside Blindsight and it becomes available under
+`--enable-plugins`.
+
+A plugin package declares its modules under the `blindsight.modules` group
+in its own `pyproject.toml`:
+
+```toml
+[project.entry-points."blindsight.modules"]
+my_module = "my_package.my_module"
+```
+
+The dotted path must resolve to an object satisfying the same module
+contract every built-in module follows — `NAME`, `TITLE`, `run(ctx)`,
+`render(data)` (see [`CLAUDE.md`](CLAUDE.md#the-module-contract) for the
+exact shape). Once such a package is installed in the
+same environment, opt into loading it — plugins are **off by default
+everywhere**, since loading one means running arbitrary third-party code:
+
+```bash
+python blindsight.py photo.jpg --enable-plugins
+```
+
+```python
+from blindsight import extract
+descriptor = extract("photo.jpg", enable_plugins=True)
+```
+
+```bash
+BLINDSIGHT_ENABLE_PLUGINS=1 python -m blindsight.mcp_server   # MCP server
+```
+
+Plugins always run *after* every built-in module — the built-in output
+order stays exactly as deliberate as it always was (see `REGISTRY` in
+`blindsight/modules/__init__.py`) — and a plugin cannot claim a `NAME`
+already used by a built-in module or another plugin. A plugin that fails
+to import or doesn't match the contract is skipped with a warning: one
+bad plugin never breaks discovery of the others, or of the built-ins,
+following the same graceful-degradation contract every built-in module
+already honors for its own failures.
 
 ## Benchmark
 

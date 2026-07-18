@@ -48,6 +48,13 @@ Three load-bearing decisions:
 2. **Modules are independent and fallible.** The orchestrator wraps every module call; `ModuleUnavailable` (missing optional dep) and any other exception both become an `available=False` result with a note. A broken module degrades one section, never the descriptor.
 3. **All geometry is relative** (fractions 0.0–1.0 of image extent). This is what lets `layout.py` link OCR text to regions with pure arithmetic even though OCR ran on the original-size image and regions ran on a ≤256px thumbnail.
 
+The diagram above shows the built-in path (`modules.REGISTRY`); when a
+caller opts into `enable_plugins=True`, `extract()` iterates
+`modules.load_registry(enable_plugins=True)` instead, which is
+`REGISTRY` with validated third-party modules appended after it (§3,
+`plugins.py`) — the loop body is otherwise identical, including the same
+per-module `ModuleUnavailable`/`Exception` handling.
+
 ## 3. Module-by-module walkthrough
 
 ### Core plumbing (`blindsight/`)
@@ -62,7 +69,8 @@ Three load-bearing decisions:
 | `colornames.py` | `nearest_name` (28-anchor curated palette, RGB nearest-neighbour), `accent_name` (hue-bucket naming robust to low saturation), `to_hex` | Every colour ships as *name + hex*; the name is what the LLM reasons with |
 | `relations.py` | Pure functions over region dicts: `bands_stacks_gradients`, `baseline_groups`, `left_edge_groups` | **The anti-hallucination heart.** Every `UPPER_SNAKE` threshold has a comment naming the false positive it rejects (e.g. `_MIN_GROUP = 3`: "two edges coincide by chance constantly; three sharing an edge is structure") |
 | `layout.py` | `build(results)` — derived cross-module section | Links each prominent OCR line to the *smallest* containing non-background region; labels baseline elements (bars) with the OCR word directly below them ("blue=Q1"). Accesses payload keys directly so a renamed key fails loudly (KeyError) instead of silently dropping the section |
-| `cli.py` | argparse CLI: `image`, `-o/--output`, `-f/--format text|json`, `-m/--modules`, `--version` | Exit 2 for unknown module names, 1 for load errors, 0 otherwise |
+| `plugins.py` | `discover(reserved_names=...)` — third-party module discovery over the `blindsight.modules` `importlib.metadata` entry-point group | Validates each entry point against the module contract, skips (with `PluginLoadWarning`) anything that fails to import, doesn't match the contract, or collides on `NAME`. Never raises — one bad plugin can't take down discovery of the rest |
+| `cli.py` | argparse CLI: `image`, `-o/--output`, `-f/--format text|json`, `-m/--modules`, `--enable-plugins`, `--version` | Exit 2 for unknown module names, 1 for load errors, 0 otherwise |
 
 ### Extraction modules (`blindsight/modules/`) — the contract
 
@@ -75,10 +83,13 @@ def render(data: dict) -> list[str]  # payload -> body lines (no header, no inde
 
 `REGISTRY` order in `modules/__init__.py` **is** the output order: cheap factual signals first (stats, ocr, colors), then structural, then metadata.
 
+Third-party packages can satisfy this same contract from outside the repo and register under the `blindsight.modules` entry-point group (`plugins.py`); `modules.load_registry(enable_plugins=True)` appends any discovered, validated ones after `REGISTRY`, leaving the built-in order untouched. See §4 for the `extract()` parameter and the [README's Plugins section](../README.md#plugins) for the package-author-facing walkthrough.
+
 | Module | Technique | Output highlights |
 |---|---|---|
 | `stats` | numpy means/stds on gray + RGB | resolution, orientation, aspect ratio (gcd-reduced), brightness (dark/mid/bright), contrast (low/medium/high), per-channel stats (JSON only) |
 | `ocr` | Tesseract via `pytesseract` (optional ×2: pip package *and* system binary) | Reading-order lines rebuilt from block/para/line indices; average confidence; largest-text position/size; `line_boxes` + `word_boxes` in relative coords (consumed by layout). Low-confidence first pass (<75) triggers an upscale+Otsu refinement pass, kept only if it scores higher and **only when text was already found** — honest negatives stay negative |
+| `tables` | Morphological ruling-line detection (OpenCV) → cell grid → one OCR pass bucketed into cells | Rows of pipe-separated cell values, row/column associations intact. Only emits when the grid is *drawn* (≥3 lines each way, spanning, actually crossing, text-sized cells) — whitespace-only column alignment is deliberately not inferred |
 | `colors` | Pillow median-cut quantisation (≤200px thumbnail, 8 bins) | dominant palette (≥4% coverage, top 5), *accent* colours (0.4–4% coverage, chromatic, hue not already dominant — catches brand marks), 3×3 grid where each cell reports its *most common* colour (bucketed mode, not mean — a mean invents colours that exist nowhere), grayscale flag |
 | `regions` | Quantise ≤256px copy (10 bins) → per-bin connected components (OpenCV), morphological open to kill speckle | Per region: colour name+hex, area fraction, bbox (relative), 3×3 position, smooth/textured, background flag (touches all 4 edges + ≥30% area). Then delegates to `relations.py` for bands / stacks / gradients / baseline groups / left-edge groups |
 | `structure` | Auto-Canny (thresholds from median intensity) + probabilistic Hough | edge density, line orientations present (h/v/diagonal), layout character (minimal/structured/busy) |
@@ -107,8 +118,9 @@ Intentionally tiny (`blindsight/__init__.py`):
 ```python
 from blindsight import extract, ImageDescriptor, ModuleResult
 
-d = extract("photo.jpg")                 # all modules
+d = extract("photo.jpg")                 # all built-in modules
 d = extract("photo.jpg", modules=["ocr", "colors"])
+d = extract("photo.jpg", enable_plugins=True)   # + third-party modules, if any installed
 d.to_text()      # -> str, the LLM-ready block
 d.to_json()      # -> dict, same structure
 d.get("ocr")     # -> ModuleResult | None  (.available, .data, .note)
@@ -116,8 +128,11 @@ d.source, d.width, d.height
 __version__      # "0.1.0" (also in pyproject.toml — keep in sync)
 ```
 
-CLI: `blindsight IMG [-o FILE] [-f text|json] [-m mod1,mod2] [--version]`, also
-reachable as `python blindsight.py` (no install) and `python -m blindsight`.
+CLI: `blindsight IMG [-o FILE] [-f text|json] [-m mod1,mod2] [--enable-plugins]
+[--version]`, also reachable as `python blindsight.py` (no install) and
+`python -m blindsight`. The MCP server (`mcp_server.py`) reads the same
+opt-in as an env var, `BLINDSIGHT_ENABLE_PLUGINS=1`, checked once at
+import time since there is no argv to pass through an MCP client config.
 
 Everything else (module payload key names, relations dict shapes) is internal but
 *contractual between modules*: `layout.py` requires `ocr.data["line_boxes"/"word_boxes"]`
