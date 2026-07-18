@@ -48,12 +48,7 @@ Three load-bearing decisions:
 2. **Modules are independent and fallible.** The orchestrator wraps every module call; `ModuleUnavailable` (missing optional dep) and any other exception both become an `available=False` result with a note. A broken module degrades one section, never the descriptor.
 3. **All geometry is relative** (fractions 0.0–1.0 of image extent). This is what lets `layout.py` link OCR text to regions with pure arithmetic even though OCR ran on the original-size image and regions ran on a ≤256px thumbnail.
 
-The diagram above shows the built-in path (`modules.REGISTRY`); when a
-caller opts into `enable_plugins=True`, `extract()` iterates
-`modules.load_registry(enable_plugins=True)` instead, which is
-`REGISTRY` with validated third-party modules appended after it (§3,
-`plugins.py`) — the loop body is otherwise identical, including the same
-per-module `ModuleUnavailable`/`Exception` handling.
+The diagram above shows the built-in path (`modules.REGISTRY`); when a caller opts into `enable_plugins=True`, `extract()` iterates `modules.load_registry(enable_plugins=True)` instead, which is `REGISTRY` with validated third-party modules appended after it (§3, `plugins.py`) — the loop body is otherwise identical, including the same per-module `ModuleUnavailable`/`Exception` handling.
 
 ## 3. Module-by-module walkthrough
 
@@ -128,15 +123,9 @@ d.source, d.width, d.height
 __version__      # "0.1.0" (also in pyproject.toml — keep in sync)
 ```
 
-CLI: `blindsight IMG [-o FILE] [-f text|json] [-m mod1,mod2] [--enable-plugins]
-[--version]`, also reachable as `python blindsight.py` (no install) and
-`python -m blindsight`. The MCP server (`mcp_server.py`) reads the same
-opt-in as an env var, `BLINDSIGHT_ENABLE_PLUGINS=1`, checked once at
-import time since there is no argv to pass through an MCP client config.
+CLI: `blindsight IMG [-o FILE] [-f text|json] [-m mod1,mod2] [--enable-plugins] [--version]`, also reachable as `python blindsight.py` (no install) and `python -m blindsight`. The MCP server (`mcp_server.py`) reads the same opt-in as an env var, `BLINDSIGHT_ENABLE_PLUGINS=1`, checked once at import time since there is no argv to pass through an MCP client config.
 
-Everything else (module payload key names, relations dict shapes) is internal but
-*contractual between modules*: `layout.py` requires `ocr.data["line_boxes"/"word_boxes"]`
-and `regions.data["regions"/"baseline_groups"]` and fails loudly if they are renamed.
+Everything else (module payload key names, relations dict shapes) is internal but *contractual between modules*: `layout.py` requires `ocr.data["line_boxes"/"word_boxes"]` and `regions.data["regions"/"baseline_groups"]` and fails loudly if they are renamed.
 
 ## 5. Dependency rationale
 

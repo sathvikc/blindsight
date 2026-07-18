@@ -79,15 +79,12 @@ modules: 11/11 available
 
 ## Why this project
 
-Sending a full image to a multimodal model is accurate but expensive, and text-only models can't accept images at all. Yet a large share of real questions about images are **factual, not perceptual**: *what does this screenshot say?*,
-*what URL is in this QR code?*, *what are the brand colours?*, *how many people?* Those answers live in symbolic facts that text carries perfectly — no pixels required.
+Sending a full image to a multimodal model is accurate but expensive, and text-only models can't accept images at all. Yet a large share of real questions about images are **factual, not perceptual**: *what does this screenshot say?*, *what URL is in this QR code?*, *what are the brand colours?*, *how many people?* Those answers live in symbolic facts that text carries perfectly — no pixels required.
 
 Blindsight extracts exactly those facts and hands them to the model as plain text. Two payoffs:
 
-- **Cost and latency.** A short text descriptor is a fraction of the token cost
-of a full image. For the factual subset of questions, you skip vision entirely and still get the right answer.
-- **Reach.** Text-only models (and cheap text endpoints) gain a usable, if
-limited, way to "answer about" images they fundamentally cannot ingest.
+- **Cost and latency.** A short text descriptor is a fraction of the token cost of a full image. For the factual subset of questions, you skip vision entirely and still get the right answer.
+- **Reach.** Text-only models (and cheap text endpoints) gain a usable, if limited, way to "answer about" images they fundamentally cannot ingest.
 
 It is deliberately honest about its limits — it does not pretend to *see* a scene. The design intent is a cheap first pass: try the descriptor, and fall back to the real image only when the question is genuinely perceptual. The included [benchmark](#benchmark) exists to measure exactly where that line sits.
 
@@ -119,11 +116,7 @@ There are three install paths — pick based on what you need:
 
 ### Run it from anywhere (recommended for just using the CLI)
 
-Want a `blindsight` command that works in any directory, in any new shell,
-without activating a virtualenv or remembering where the repo lives?
-Use [`pipx`](https://pipx.pypa.io) — it builds an isolated environment for
-the package once and puts just the commands on your `PATH`, the same idea
-as `npm install -g`:
+Want a `blindsight` command that works in any directory, in any new shell, without activating a virtualenv or remembering where the repo lives? Use [`pipx`](https://pipx.pypa.io) — it builds an isolated environment for the package once and puts just the commands on your `PATH`, the same idea as `npm install -g`:
 
 ```bash
 pipx install .                # from inside this repo, one-time
@@ -136,10 +129,7 @@ blindsight photo.jpg          # just works — no cwd, no venv activation
 blindsight-mcp                # ditto for the MCP server
 ```
 
-This is also the cleanest way to register the [MCP server](#mcp-server--give-any-text-only-model-sight)
-with a client, since the client launches the command from *its* working
-directory, never yours — see that section for why a bare `python -m
-blindsight.mcp_server` trips people up otherwise.
+This is also the cleanest way to register the [MCP server](#mcp-server--give-any-text-only-model-sight) with a client, since the client launches the command from *its* working directory, never yours — see that section for why a bare `python -m blindsight.mcp_server` trips people up otherwise.
 
 ### Quick run, no install
 
@@ -361,20 +351,13 @@ These numbers are a single graded pass on a small, deliberately varied set, not 
 
 ## Design notes
 
-- **Graceful degradation.** A missing dependency or a failing module never
-aborts extraction; it is reported as `unavailable` with a reason.
-- **Few system dependencies.** QR decoding uses OpenCV's built-in detector
-rather than zbar. Dominant colours use Pillow's quantiser rather than an extra library. Tesseract is the only optional system dependency.
-- **Named colours.** Every colour ships with both a hex code and a
-human-readable name, since the name is what a language model reasons with most reliably.
-- **Adaptive thresholds.** Edge detection derives its thresholds from each
-image's own intensity, so it adapts to dark and bright images alike.
-- **Recovery passes, gated by evidence.** Hard text images get targeted extra
-OCR passes — binarised for small/faint text, inverted for light-on-dark (slides, terminals), deskewed for tilted scans. A pass only wins by scoring strictly higher on total word confidence, and a pass that starts from *zero* first-pass words must clear a stronger bar (several words at solid confidence), so a photo with no text can never gain hallucinated text from the extra attempts.
-- **Ruled tables, reconstructed — aligned columns, left alone.** Tables carry
-the densest facts an image can hold, and flat OCR destroys exactly the row/column associations they depend on. The `tables` module finds ruling lines morphologically, rebuilds the cell grid, and buckets one OCR pass's words into cells — but only when the grid is *drawn*: at least three lines each way, spanning, actually crossing, with text-sized cells. Whitespace-only column alignment is deliberately not inferred; inventing an invisible grid is the kind of unmeasured structure this project refuses to emit.
-- **Symbolic geometry, not ASCII art.** The obvious way to give a text model
-"sight" is to rasterise the image into a character grid — and it fails twice: token count scales with pixel count, and BPE tokenisation destroys the 2D alignment the picture depends on. The `regions` module takes the opposite route: segment the image classically and ship a handful of *measured facts* (region colours, positions, full-width bands, repeated row stacks, elements sharing a baseline with their heights). On a bar chart it emits `baseline: 4 elements aligned at y=86% — left→right: blue h=29%, orange h=48%, green h=39%, red h=66%`, which lets a text model answer *which bar is tallest* — a question type even multimodal models get wrong on precise values — with no chart-specific parser, in a dozen tokens. The module only measures; interpreting "blue band over green band" as *sky over grass* is left to the model, which is exactly what it is good at.
+- **Graceful degradation.** A missing dependency or a failing module never aborts extraction; it is reported as `unavailable` with a reason.
+- **Few system dependencies.** QR decoding uses OpenCV's built-in detector rather than zbar. Dominant colours use Pillow's quantiser rather than an extra library. Tesseract is the only optional system dependency.
+- **Named colours.** Every colour ships with both a hex code and a human-readable name, since the name is what a language model reasons with most reliably.
+- **Adaptive thresholds.** Edge detection derives its thresholds from each image's own intensity, so it adapts to dark and bright images alike.
+- **Recovery passes, gated by evidence.** Hard text images get targeted extra OCR passes — binarised for small/faint text, inverted for light-on-dark (slides, terminals), deskewed for tilted scans. A pass only wins by scoring strictly higher on total word confidence, and a pass that starts from *zero* first-pass words must clear a stronger bar (several words at solid confidence), so a photo with no text can never gain hallucinated text from the extra attempts.
+- **Ruled tables, reconstructed — aligned columns, left alone.** Tables carry the densest facts an image can hold, and flat OCR destroys exactly the row/column associations they depend on. The `tables` module finds ruling lines morphologically, rebuilds the cell grid, and buckets one OCR pass's words into cells — but only when the grid is *drawn*: at least three lines each way, spanning, actually crossing, with text-sized cells. Whitespace-only column alignment is deliberately not inferred; inventing an invisible grid is the kind of unmeasured structure this project refuses to emit.
+- **Symbolic geometry, not ASCII art.** The obvious way to give a text model "sight" is to rasterise the image into a character grid — and it fails twice: token count scales with pixel count, and BPE tokenisation destroys the 2D alignment the picture depends on. The `regions` module takes the opposite route: segment the image classically and ship a handful of *measured facts* (region colours, positions, full-width bands, repeated row stacks, elements sharing a baseline with their heights). On a bar chart it emits `baseline: 4 elements aligned at y=86% — left→right: blue h=29%, orange h=48%, green h=39%, red h=66%`, which lets a text model answer *which bar is tallest* — a question type even multimodal models get wrong on precise values — with no chart-specific parser, in a dozen tokens. The module only measures; interpreting "blue band over green band" as *sky over grass* is left to the model, which is exactly what it is good at.
 
 ## What it deliberately won't do
 
