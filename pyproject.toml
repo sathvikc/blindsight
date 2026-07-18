@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "blindsight"
-version = "0.2.0"
+version = "0.3.0"
 description = "Convert any image into a structured text descriptor using classical image processing, so text-first LLMs can answer factual questions about it without paying for full vision."
 readme = "README.md"
 requires-python = ">=3.10"
