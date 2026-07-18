@@ -40,9 +40,9 @@
     "semantic_hash": "e34e8888889baa888a88cd2ba6ead407"
   },
   "blindsight/cli.py": {
-    "mtime": 1782949600.6881466,
-    "ast_hash": "fefc13465749d351b176e50900e3c527",
-    "semantic_hash": "fefc13465749d351b176e50900e3c527"
+    "mtime": 1784350617.168018,
+    "ast_hash": "bb41f8b6fed2dd57be291de56ef80ff8",
+    "semantic_hash": ""
   },
   "blindsight/colornames.py": {
     "mtime": 1782949600.6882644,
@@ -60,9 +60,9 @@
     "semantic_hash": "a937064fa01c37017786dc34de6bb8b7"
   },
   "blindsight/extractor.py": {
-    "mtime": 1782949600.6885395,
-    "ast_hash": "4aeff86b06be894a1644bbebba05440f",
-    "semantic_hash": "4aeff86b06be894a1644bbebba05440f"
+    "mtime": 1784350617.1681426,
+    "ast_hash": "7bd6be062e8bf32a5675332a59a8ada9",
+    "semantic_hash": ""
   },
   "blindsight/formatter.py": {
     "mtime": 1782949600.6886463,
@@ -80,14 +80,14 @@
     "semantic_hash": "1d79a81ea7dee3653c45c3bee2060160"
   },
   "blindsight/mcp_server.py": {
-    "mtime": 1783958416.1232889,
-    "ast_hash": "29bb73578ec9f4291535ba2187271d55",
-    "semantic_hash": "29bb73578ec9f4291535ba2187271d55"
+    "mtime": 1784350617.1683044,
+    "ast_hash": "3ffacf24d371ca0d485040420e71ec3c",
+    "semantic_hash": ""
   },
   "blindsight/modules/__init__.py": {
-    "mtime": 1783958416.123435,
-    "ast_hash": "f4192cf166d34af7f0302497113bf398",
-    "semantic_hash": "f4192cf166d34af7f0302497113bf398"
+    "mtime": 1784350931.6980596,
+    "ast_hash": "1bf7781e8f92021eb892ccb181350bc3",
+    "semantic_hash": ""
   },
   "blindsight/modules/codes.py": {
     "mtime": 1782949600.6891072,
@@ -295,13 +295,13 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1783960498.5279083,
-    "ast_hash": "53d47c02c0c529be7ef78dce301555d7",
+    "mtime": 1784351496.135987,
+    "ast_hash": "67d6c06abefc9fac13fa393272b49f8c",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1783958416.123164,
-    "ast_hash": "dcf5c2e204ef60d8e5ad2da63800a9f9",
+    "mtime": 1784351309.8018878,
+    "ast_hash": "67a04a256cec1f158e4d94c61d271852",
     "semantic_hash": ""
   },
   "benchmark/README.md": {
@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "docs/ARCHITECTURE.md": {
-    "mtime": 1783955907.7679765,
-    "ast_hash": "1251e45575721f1e430bfbd965be22d8",
+    "mtime": 1784351689.897506,
+    "ast_hash": "f81fb2d2558c61f48362afb5e9f5831c",
     "semantic_hash": ""
   },
   "examples/SHOWCASE.md": {
@@ -517,6 +517,16 @@
   "logo.svg": {
     "mtime": 1783955907.7718804,
     "ast_hash": "80be3cfb6f1482fc7494c8a838a643c7",
+    "semantic_hash": ""
+  },
+  "blindsight/plugins.py": {
+    "mtime": 1784350931.6982338,
+    "ast_hash": "af2f6304fc71c4052a6541b5fc4c8d35",
+    "semantic_hash": ""
+  },
+  "tests/test_plugins.py": {
+    "mtime": 1784350617.1688774,
+    "ast_hash": "f91ec1d1ac35f2f43f0938b1fbd64f65",
     "semantic_hash": ""
   }
 }
