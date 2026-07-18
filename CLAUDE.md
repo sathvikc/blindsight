@@ -78,28 +78,12 @@ Core invariants — do not break these:
 
 ## Plugins
 
-Third-party packages can add modules from outside this repo via a Python entry
-point, so the built-in `REGISTRY` never needs to grow for someone else's use
-case. Mechanics live in `blindsight/plugins.py`; `modules.load_registry(enable_plugins=True)`
-is the only thing that touches it, called from `extractor.extract(..., enable_plugins=True)`,
-the CLI's `--enable-plugins`, and the MCP server's `BLINDSIGHT_ENABLE_PLUGINS=1`.
+Third-party packages can add modules from outside this repo via a Python entry point, so the built-in `REGISTRY` never needs to grow for someone else's use case. Mechanics live in `blindsight/plugins.py`; `modules.load_registry(enable_plugins=True)` is the only thing that touches it, called from `extractor.extract(..., enable_plugins=True)`, the CLI's `--enable-plugins`, and the MCP server's `BLINDSIGHT_ENABLE_PLUGINS=1`.
 
-- A plugin package registers under the `blindsight.modules` entry-point group
-  and its target must satisfy the exact same module contract above (`NAME`,
-  `TITLE`, `run`, `render`) — `plugins.discover()` validates this and skips
-  (with a `PluginLoadWarning`, never an exception) anything that fails to
-  import, doesn't match the contract, or reuses a `NAME` already taken by a
-  built-in module or another plugin.
-- Plugins are **opt-in everywhere**, never auto-loaded — an installed plugin
-  package runs its code the moment discovery happens, so a caller who didn't
-  ask for plugins must never get one silently.
-- Plugins always append **after** the built-in `REGISTRY`; they cannot
-  reorder or displace a built-in module's position, keeping the "cheap
-  signals first" output order intact regardless of what's installed.
-- When touching this system, keep the graceful-degradation invariant: one
-  broken plugin must never prevent the built-ins, or other plugins, from
-  running. `tests/test_plugins.py` covers discovery, validation, and the
-  opt-in default with faked entry points (no real plugin package needed).
+- A plugin package registers under the `blindsight.modules` entry-point group and its target must satisfy the exact same module contract above (`NAME`, `TITLE`, `run`, `render`) — `plugins.discover()` validates this and skips (with a `PluginLoadWarning`, never an exception) anything that fails to import, doesn't match the contract, or reuses a `NAME` already taken by a built-in module or another plugin.
+- Plugins are **opt-in everywhere**, never auto-loaded — an installed plugin package runs its code the moment discovery happens, so a caller who didn't ask for plugins must never get one silently.
+- Plugins always append **after** the built-in `REGISTRY`; they cannot reorder or displace a built-in module's position, keeping the "cheap signals first" output order intact regardless of what's installed.
+- When touching this system, keep the graceful-degradation invariant: one broken plugin must never prevent the built-ins, or other plugins, from running. `tests/test_plugins.py` covers discovery, validation, and the opt-in default with faked entry points (no real plugin package needed).
 
 ## Commands
 
